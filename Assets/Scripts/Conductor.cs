@@ -1,243 +1,172 @@
-﻿using System.Collections.Generic;
+﻿using DG.Tweening;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+public enum Button
+{
+    Left,
+    Right,
+    Up,
+    Down
+}
+
 public class Conductor : SingletonMonoBehaviour<Conductor>
 {
+    [Header("Prefabs")]
+    public GameObject leftPrefab;
+    public GameObject rightPrefab;
+    public GameObject upPrefab;
+    public GameObject downPrefab;
+
+    [Header("Settings")]
+    public AudioSource musicSource;
+    public int beatsInAdvance = 4;
+    [Space]
+    public RectTransform leftTarget;
+    public RectTransform rightTarget;
+    public RectTransform upTarget;
+    public RectTransform downTarget;
+    [Space]
+    public Transform leftOrigin;
+    public Transform rightOrigin;
+    public Transform upOrigin;
+    public Transform downOrigin;
+
     public SongData CurrentSong { get; set; }
 
-    public bool IsReady { get; set; } = false;
-
-    //The number of seconds for each song beat
-    public float secPerBeat { get; set; }
-
-    //Current song position, in seconds
-    public float songPositionInSeconds { get; set; }
-
-    //Current song position, in beats
-    public float songPositionInBeats { get; set; }
-
-    //How many seconds have passed since the song started
-    public float startTime { get; set; }
-
-    public string songPath = "";
-
-    //an AudioSource attached to this GameObject that will play the music.
-    public AudioSource musicSource;
+    private float _songPositionInSeconds;
+    private float _startTime;
+    private int _nextIndex;
+    private float _timeInAdvance;
+    private Difficulty _currentDifficulty;
+    private int _currentNoteIndex = 0;
+    private int _currentBPMIndex = 0;
+    private float _travelTime;
 
     private void Start()
     {
-        LoadSongData(songPath);
+        CurrentSong = SongLoader.Instance.LoadSongData(SongLoader.Instance.songPath);
+
+        StartSong();
     }
 
     private void Update()
     {
-        if (CurrentSong != null || !IsReady)
+        if (CurrentSong == null)
             return;
+
+        if (CurrentSong.audioClip == null)
+        {
+            Debug.LogWarning("AudioClip is null");
+            return;
+        }
 
         UpdateSong();
     }
 
-    public void LoadSongData(string path)
-    {
-        var lines = File.ReadAllLines(path);
-
-        //Get the file directory, and make sure it ends with either forward or backslash
-        var fileDir = Path.GetDirectoryName(path);
-        if (!fileDir.EndsWith("\\") && !fileDir.EndsWith("/"))
-        {
-            fileDir += "\\";
-        }
-
-        bool inNotes = false;
-
-        var title = "";
-        var musicPath = "";
-        var artist = "";
-        bool isValid = false;
-        float offset;
-        float displayBpm;
-        var bpms = new List<KeyValuePair<float, float>>();
-        var bars = new Dictionary<Difficulty, Bar[]>();
-
-        for (int i = 0; i < lines.Length; i++)
-        {
-            string line = lines[i].Trim();
-
-            if (line.StartsWith("//"))
-                continue;
-
-            if (line.StartsWith("#"))
-            {
-                string key = line.Substring(0, line.IndexOf(':')).Trim('#').Trim(':');
-
-                switch (key.ToUpper())
-                {
-                    case "TITLE":
-                        title = line.Substring(line.IndexOf(':')).Trim(':').Trim(';');
-                        break;
-                    //case "SUBTITLE":
-                    //    songData.subtitle = line.Substring(line.IndexOf(':')).Trim(':').Trim(';');
-                    //    break;
-                    case "ARTIST":
-                        artist = line.Substring(line.IndexOf(':')).Trim(':').Trim(';');
-                        break;
-                    //case "BANNER":
-                    //    songData.bannerPath = fileDir + line.Substring(line.IndexOf(':')).Trim(':').Trim(';');
-                    //    break;
-                    //case "BACKGROUND":
-                    //    songData.backgroundPath = fileDir + line.Substring(line.IndexOf(':')).Trim(':').Trim(';');
-                    //    break;
-                    case "MUSIC":
-                        musicPath = path + line.Substring(line.IndexOf(':')).Trim(':').Trim(';');
-                        if (!File.Exists(musicPath))
-                        {
-                            musicPath = null;
-                            isValid = false;
-                        }
-                        break;
-                    case "OFFSET":
-                        if (!float.TryParse(line.Substring(line.IndexOf(':')).Trim(':').Trim(';'), out offset))
-                        {
-                            offset = 0.0f;
-                        }
-                        break;
-                    //case "SAMPLESTART":
-                    //    if (!float.TryParse(line.Substring(line.IndexOf(':')).Trim(':').Trim(';'), out songData.sampleStart))
-                    //    {
-                    //        //Error Parsing
-                    //        songData.sampleStart = 0.0f;
-                    //    }
-                    //    break;
-                    //case "SAMPLELENGTH":
-                    //    if (!float.TryParse(line.Substring(line.IndexOf(':')).Trim(':').Trim(';'), out songData.sampleLength))
-                    //    {
-                    //        //Error Parsing
-                    //        songData.sampleLength = sampleLengthDefault;
-                    //    }
-                    //    break;
-                    case "DISPLAYBPM":
-                        if (!float.TryParse(line.Substring(line.IndexOf(':')).Trim(':').Trim(';'), out displayBpm) || displayBpm <= 0)
-                        {
-                            isValid = false;
-                            displayBpm = 0.0f;
-                        }
-                        break;
-                    case "BPMS":
-                        var beatsPerMinutes = line.Substring(line.IndexOf(':')).Trim(':').Trim(';').Split(',');
-                        for (int j = 0; j < beatsPerMinutes.Length; j++)
-                        {
-                            var newBpm = beatsPerMinutes[j].Split('=');
-                            float bpmKey;
-                            float bpmValue;
-                            if (!float.TryParse(newBpm[0], out bpmKey) || !float.TryParse(newBpm[1], out bpmValue))
-                            {
-                                isValid = false;
-                            }
-                            else
-                            {
-                                bpms.Add(new KeyValuePair<float, float>(bpmKey, bpmValue));
-                            }
-                        }
-                        break;
-                    case "NOTES":
-                        inNotes = true;
-
-                        // Not handled
-                        if (!lines[i + 1].ToLower().Contains("dance-single"))
-                        {
-                            // Update the for loop we're in to adequately skip this section
-                            for (int j = i; j < lines.Length; j++)
-                            {
-                                if (lines[j].Contains(";"))
-                                {
-                                    i = j - 1;
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-
-
-            if (inNotes)
-            {
-                if (line.ToLower().Contains("beginner") ||
-                line.ToLower().Contains("easy") ||
-                line.ToLower().Contains("medium") ||
-                line.ToLower().Contains("hard") ||
-                line.ToLower().Contains("challenge"))
-                {
-                    var difficultyString = line.Trim().Trim(':');
-
-                    var noteLines = new List<string>();
-
-                    for (int j = i; j < lines.Length; j++)
-                    {
-                        string noteLine = lines[j].Trim();
-                        if (noteLine.EndsWith(";"))
-                        {
-                            i = j - 1;
-                            break;
-                        }
-                        else if (!noteLine.Contains(":"))
-                        {
-                            noteLines.Add(noteLine);
-                        }
-                    }
-
-                    RecordBars(difficultyString, noteLines, ref bars);
-                }
-
-                if (line.EndsWith(";"))
-                {
-                    inNotes = false;
-                }
-            }
-        }
-    }
-
-    private void RecordBars(string difficultyString, List<string> noteLines, ref Dictionary<Difficulty, Bar[]> barsData)
-    {
-        Difficulty difficulty;
-        if (System.Enum.TryParse(difficultyString, ignoreCase: true, out difficulty))
-        {
-            var bars = new Bar[noteLines.Count];
-            for (int i = 0; i < bars.Length; i++)
-            {
-                bars[i] = ParseNoteLine(noteLines[i]);
-            }
-
-            barsData.Add(difficulty, bars);
-        }
-    }
-
-    private Bar ParseNoteLine(string noteLine)
-    {
-
-    }
-
     private void StartSong()
     {
-        //Calculate the number of seconds in each beat
-        secPerBeat = 60f / CurrentSong.bpms[0];
+        musicSource.clip = CurrentSong.audioClip;
 
-        //Record the time when the music starts
-        startTime = (float)AudioSettings.dspTime;
+        _startTime = (float)AudioSettings.dspTime;
 
-        //Start the music
+        _timeInAdvance = beatsInAdvance * 60f / CurrentSong.bpms[_currentBPMIndex].Value;
+
+        _currentDifficulty = Difficulty.Hard;
+
         musicSource.Play();
     }
 
     private void UpdateSong()
     {
-        //determine how many seconds since the song started
-        var songPositionInSeconds = (float)(AudioSettings.dspTime - startTime - CurrentSong.offset);
+        _songPositionInSeconds = (float)(AudioSettings.dspTime - _startTime + CurrentSong.offset);
 
-        //determine how many beats since the song started
-        songPositionInBeats = songPositionInSeconds / secPerBeat;
+        if (CurrentSong.bpms.Count > _currentBPMIndex + 1)
+        {
+            if (_songPositionInSeconds > CurrentSong.bpms[_currentBPMIndex + 1].Key)
+            {
+                _currentBPMIndex++;
+                _timeInAdvance = beatsInAdvance * 60f / CurrentSong.bpms[_currentBPMIndex].Value;
+            }
+        }
+
+        var nextNote = CurrentSong.notes[_currentDifficulty][_currentNoteIndex];
+
+        if (_songPositionInSeconds + _timeInAdvance >= nextNote.Timestamp)
+        {
+            //targetTransform.DOScale(1.5f, 0.1f).OnComplete(() => targetTransform.DOScale(1f, 0.1f));
+
+            if (!nextNote.IsEmpty)
+                SpawnNote(nextNote);
+
+            //if (nextNote.Left != '0')
+            //{
+            //    _left.DOScale(1.5f, 0.1f).OnComplete(() => _left.DOScale(1f, 0.1f));
+            //}
+
+            //if (nextNote.Right != '0')
+            //{
+            //    _right.DOScale(1.5f, 0.1f).OnComplete(() => _right.DOScale(1f, 0.1f));
+            //}
+
+            //if (nextNote.Up != '0')
+            //{
+            //    _up.DOScale(1.5f, 0.1f).OnComplete(() => _up.DOScale(1f, 0.1f));
+            //}
+
+            //if (nextNote.Down != '0')
+            //{
+            //    _down.DOScale(1.5f, 0.1f).OnComplete(() => _down.DOScale(1f, 0.1f));
+            //}
+
+            _currentNoteIndex++;
+        }
+    }
+
+    private void SpawnNote(Note note)
+    {
+        if (note.Left != '0')
+        {
+            var button = Instantiate(leftPrefab, leftOrigin.position, Quaternion.identity, transform);
+            Travel(button, leftTarget);
+        }
+
+        if (note.Right != '0')
+        {
+            var button = Instantiate(rightPrefab, rightOrigin.position, Quaternion.identity, transform);
+            Travel(button, rightTarget);
+        }
+
+        if (note.Up != '0')
+        {
+            var button = Instantiate(upPrefab, upOrigin.position, Quaternion.identity, transform);
+            Travel(button, upTarget);
+        }
+
+        if (note.Down != '0')
+        {
+            var button = Instantiate(downPrefab, downOrigin.position, Quaternion.identity, transform);
+            Travel(button, downTarget);
+        }
+    }
+
+    private void Travel(GameObject button, Transform target)
+    {
+        button.transform.DOMoveY(target.position.y, _timeInAdvance).SetEase(Ease.Linear).OnComplete(() => PulseAndDie(button.transform, 0.25f, 0.2f));
+    }
+
+    public void Pulse(Transform transform, float endValue, float duration)
+    {
+        var originalScale = transform.localScale;
+        transform.DOScale(endValue, duration / 2).OnComplete(() => transform.DOScale(originalScale, duration / 2));
+    }
+
+    public void PulseAndDie(Transform transform, float endValue, float duration)
+    {
+        var originalScale = transform.localScale;
+        transform.DOScale(endValue, duration / 2).OnComplete(() => transform.DOScale(originalScale, duration / 2)).OnComplete(() => Destroy(transform.gameObject));
     }
 }

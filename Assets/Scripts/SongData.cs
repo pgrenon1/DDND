@@ -4,13 +4,26 @@ using UnityEngine;
 [System.Serializable]
 public class SongData
 {
-    public bool isValid;
     public string title;
     public string artist;
     public float offset;
-    public Dictionary<float, float> bpms;
-    public AudioClip music;
-    public Dictionary<Difficulty, Bar[]> bars;
+    public List<KeyValuePair<float, float>> bpms;
+    public float displayBpm;
+    public string musicPath;
+    public AudioClip audioClip;
+    public Dictionary<Difficulty, List<Note>> notes;
+
+    public SongData(string title, string artist, float offset, List<KeyValuePair<float, float>> bpms, string musicPath, float displayBpm, Dictionary<Difficulty, List<Note>> notes)
+    {
+        this.title = title;
+        this.artist = artist;
+        this.offset = offset;
+        this.bpms = bpms;
+        this.musicPath = musicPath;
+        this.audioClip = (AudioClip)Resources.Load(musicPath);
+        this.displayBpm = displayBpm;
+        this.notes = notes;
+    }
 }
 
 public enum Difficulty
