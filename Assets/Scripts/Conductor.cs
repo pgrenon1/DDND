@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
 
 public enum Button
 {
@@ -13,160 +14,170 @@ public enum Button
     Down
 }
 
-public class Conductor : SingletonMonoBehaviour<Conductor>
+public class Conductor : MonoBehaviour
 {
     [Header("Prefabs")]
-    public GameObject leftPrefab;
-    public GameObject rightPrefab;
-    public GameObject upPrefab;
-    public GameObject downPrefab;
+    public Note leftNote;
+    public Note rightNote;
+    public Note upNote;
+    public Note downNote;
+
+    [Header("Scene")]
+    public RectTransform leftOrigin;
+    public RectTransform rightOrigin;
+    public RectTransform upOrigin;
+    public RectTransform downOrigin;
+    [Space]
+    public RectTransform leftJudgment;
+    public RectTransform rightJudgment;
+    public RectTransform upJudgment;
+    public RectTransform downJudgment;
 
     [Header("Settings")]
     public AudioSource musicSource;
     public int beatsInAdvance = 4;
-    [Space]
-    public RectTransform leftTarget;
-    public RectTransform rightTarget;
-    public RectTransform upTarget;
-    public RectTransform downTarget;
-    [Space]
-    public Transform leftOrigin;
-    public Transform rightOrigin;
-    public Transform upOrigin;
-    public Transform downOrigin;
+    public Difficulty currentDifficulty;
+    public float window = 0.5f;
 
-    public SongData CurrentSong { get; set; }
+    public SongData CurrentSong { get; private set; }
+    public bool IsActive { get; private set; }
 
-    private float _songPositionInSeconds;
+    public float SongPositionInSeconds { get; private set; }
     private float _startTime;
     private int _nextIndex;
     private float _timeInAdvance;
-    private Difficulty _currentDifficulty;
-    private int _currentNoteIndex = 0;
     private int _currentBPMIndex = 0;
-    private float _travelTime;
+    private int _nextNoteIndex = 0;
+    private NoteData _nextNote;
+    private int _currentNoteIndex = 0;
+    private NoteData _currentNote;
 
-    private void Start()
-    {
-        CurrentSong = SongLoader.Instance.LoadSongData(SongLoader.Instance.songPath);
+    //private void Start()
+    //{
+    //    CurrentSong = SongLoader.Instance.LoadSongData(SongLoader.Instance.songPath);
 
-        StartSong();
-    }
+    //    StartSong();
+    //}
 
     private void Update()
     {
-        if (CurrentSong == null)
-            return;
-
-        if (CurrentSong.audioClip == null)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.LogWarning("AudioClip is null");
-            return;
+            CurrentSong = SongLoader.Instance.Songs[0];
+            StartSong();
         }
+
+        if (CurrentSong == null || !CurrentSong.IsValid)
+            return;
 
         UpdateSong();
     }
 
     private void StartSong()
     {
-        musicSource.clip = CurrentSong.audioClip;
+        if (!musicSource.isPlaying)
+        {
+            musicSource.clip = CurrentSong.audioClip;
+            musicSource.Play();
+        }
 
         _startTime = (float)AudioSettings.dspTime;
 
         _timeInAdvance = beatsInAdvance * 60f / CurrentSong.bpms[_currentBPMIndex].Value;
 
-        _currentDifficulty = Difficulty.Hard;
+        _nextNote = CurrentSong.notes[currentDifficulty][_nextNoteIndex];
+        _currentNote = CurrentSong.notes[currentDifficulty][_currentNoteIndex];
 
-        musicSource.Play();
     }
 
     private void UpdateSong()
     {
-        _songPositionInSeconds = (float)(AudioSettings.dspTime - _startTime + CurrentSong.offset);
+        SongPositionInSeconds = (float)(AudioSettings.dspTime - _startTime + CurrentSong.offset);
 
         if (CurrentSong.bpms.Count > _currentBPMIndex + 1)
         {
-            if (_songPositionInSeconds > CurrentSong.bpms[_currentBPMIndex + 1].Key)
+            if (SongPositionInSeconds > CurrentSong.bpms[_currentBPMIndex + 1].Key)
             {
                 _currentBPMIndex++;
                 _timeInAdvance = beatsInAdvance * 60f / CurrentSong.bpms[_currentBPMIndex].Value;
             }
         }
 
-        var nextNote = CurrentSong.notes[_currentDifficulty][_currentNoteIndex];
+        //if (_songPositionInSeconds >= _currentNote.Timestamp)
+        //{
+        //    if (_currentNote.Left != '0')
+        //        PulseAndDie(leftJudgment, 1.25f, 0.5f);
+        //    if (_currentNote.Right != '0')
+        //        PulseAndDie(rightJudgment, 1.25f, 0.5f);
+        //    if (_currentNote.Up != '0')
+        //        PulseAndDie(upJudgment, 1.25f, 0.5f);
+        //    if (_currentNote.Down != '0')
+        //        PulseAndDie(downJudgment, 1.25f, 0.5f);
 
-        if (_songPositionInSeconds + _timeInAdvance >= nextNote.Timestamp)
+        //    _currentNoteIndex++;
+        //    _currentNote = CurrentSong.notes[currentDifficulty][_currentNoteIndex];
+        //}
+
+        if (SongPositionInSeconds + _timeInAdvance >= _nextNote.Timestamp)
         {
-            //targetTransform.DOScale(1.5f, 0.1f).OnComplete(() => targetTransform.DOScale(1f, 0.1f));
+            if (!_nextNote.IsEmpty)
+            {
+                SpawnNote(_nextNote);
+            }
 
-            if (!nextNote.IsEmpty)
-                SpawnNote(nextNote);
+            _nextNoteIndex++;
 
-            //if (nextNote.Left != '0')
-            //{
-            //    _left.DOScale(1.5f, 0.1f).OnComplete(() => _left.DOScale(1f, 0.1f));
-            //}
-
-            //if (nextNote.Right != '0')
-            //{
-            //    _right.DOScale(1.5f, 0.1f).OnComplete(() => _right.DOScale(1f, 0.1f));
-            //}
-
-            //if (nextNote.Up != '0')
-            //{
-            //    _up.DOScale(1.5f, 0.1f).OnComplete(() => _up.DOScale(1f, 0.1f));
-            //}
-
-            //if (nextNote.Down != '0')
-            //{
-            //    _down.DOScale(1.5f, 0.1f).OnComplete(() => _down.DOScale(1f, 0.1f));
-            //}
-
-            _currentNoteIndex++;
+            _nextNote = CurrentSong.notes[currentDifficulty][_nextNoteIndex];
         }
     }
 
-    private void SpawnNote(Note note)
+    private void SpawnNote(NoteData noteData)
     {
-        if (note.Left != '0')
+        if (noteData.IsEmpty)
+            return;
+
+        if (noteData.Left != '0')
         {
-            var button = Instantiate(leftPrefab, leftOrigin.position, Quaternion.identity, transform);
-            Travel(button, leftTarget);
+            var note = Instantiate(leftNote, leftOrigin.position, Quaternion.identity, transform);
+            note.TimeStamp = noteData.Timestamp;
+            note.Conductor = this;
+            note.Travel(leftJudgment, _timeInAdvance);
         }
 
-        if (note.Right != '0')
+        if (noteData.Right != '0')
         {
-            var button = Instantiate(rightPrefab, rightOrigin.position, Quaternion.identity, transform);
-            Travel(button, rightTarget);
+            var note = Instantiate(rightNote, rightOrigin.position, Quaternion.identity, transform);
+            note.TimeStamp = noteData.Timestamp;
+            note.Conductor = this;
+            note.Travel(rightJudgment, _timeInAdvance);
         }
 
-        if (note.Up != '0')
+        if (noteData.Up != '0')
         {
-            var button = Instantiate(upPrefab, upOrigin.position, Quaternion.identity, transform);
-            Travel(button, upTarget);
+            var note = Instantiate(upNote, upOrigin.position, Quaternion.identity, transform);
+            note.TimeStamp = noteData.Timestamp;
+            note.Conductor = this;
+            note.Travel(upJudgment, _timeInAdvance);
         }
 
-        if (note.Down != '0')
+        if (noteData.Down != '0')
         {
-            var button = Instantiate(downPrefab, downOrigin.position, Quaternion.identity, transform);
-            Travel(button, downTarget);
+            var note = Instantiate(downNote, downOrigin.position, Quaternion.identity, transform);
+            note.TimeStamp = noteData.Timestamp;
+            note.Conductor = this;
+            note.Travel(downJudgment, _timeInAdvance);
         }
-    }
-
-    private void Travel(GameObject button, Transform target)
-    {
-        button.transform.DOMoveY(target.position.y, _timeInAdvance).SetEase(Ease.Linear).OnComplete(() => PulseAndDie(button.transform, 0.25f, 0.2f));
     }
 
     public void Pulse(Transform transform, float endValue, float duration)
     {
-        var originalScale = transform.localScale;
-        transform.DOScale(endValue, duration / 2).OnComplete(() => transform.DOScale(originalScale, duration / 2));
+        transform.DOPunchScale(Vector3.one * endValue, duration).From();
     }
 
     public void PulseAndDie(Transform transform, float endValue, float duration)
     {
-        var originalScale = transform.localScale;
-        transform.DOScale(endValue, duration / 2).OnComplete(() => transform.DOScale(originalScale, duration / 2)).OnComplete(() => Destroy(transform.gameObject));
+        var copy = Instantiate(transform.gameObject, transform.position, Quaternion.identity, transform);
+        copy.GetComponent<Image>().DOFade(0, duration).OnComplete(() => Destroy(copy));
+        copy.transform.DOScale(Vector3.one * endValue, duration);
     }
 }

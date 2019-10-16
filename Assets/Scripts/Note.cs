@@ -1,37 +1,36 @@
-﻿[System.Serializable]
-public class Note
+﻿using DG.Tweening;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Note : MonoBehaviour
 {
-    public float Timestamp { get; set; }
-    public char Left { get; set; }
-    public char Up { get; set; }
-    public char Right { get; set; }
-    public char Down { get; set; }
-    public bool IsEmpty
+    public float TimeStamp { get; set; }
+    public Conductor Conductor { get; set; }
+    public bool IsOpen
     {
         get
         {
-            return Left == '0' && Right == '0' && Up == '0' && Down == '0';
+            return Conductor.SongPositionInSeconds >= TimeStamp - Conductor.window / 2
+                && Conductor.SongPositionInSeconds <= TimeStamp + Conductor.window / 2;
         }
     }
 
-    public Note(char left, char up, char right, char down)
+    public void Travel(Transform target, float timeInAdvance)
     {
-        Left = left;
-        Up = up;
-        Right = right;
-        Down = down;
+        var travelSequence = DOTween.Sequence();
+        travelSequence.Append(transform.DOMove(target.position + (target.position - transform.position) * 0.25f, timeInAdvance * 1.25f)
+            .SetEase(Ease.Linear))
+            .AppendCallback(() => Destroy(transform.gameObject));
+        travelSequence.Play();
     }
 
-    public Note(string noteLine)
+    private void Update()
     {
-        Left = noteLine[0];
-        Up = noteLine[1];
-        Right = noteLine[2];
-        Down = noteLine[3];
+        if (Conductor.SongPositionInSeconds >= TimeStamp - Conductor.window / 2)
+        {
+
+        }
     }
 
-    public override string ToString()
-    {
-        return Left.ToString() + Up.ToString() + Right.ToString() + Down.ToString() + " at " + Timestamp;
-    }
 }

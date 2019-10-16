@@ -11,9 +11,22 @@ public class SongData
     public float displayBpm;
     public string musicPath;
     public AudioClip audioClip;
-    public Dictionary<Difficulty, List<Note>> notes;
+    public Dictionary<Difficulty, List<NoteData>> notes;
 
-    public SongData(string title, string artist, float offset, List<KeyValuePair<float, float>> bpms, string musicPath, float displayBpm, Dictionary<Difficulty, List<Note>> notes)
+    public bool IsValid
+    {
+        get
+        {
+            return !string.IsNullOrEmpty(title)
+                && !string.IsNullOrEmpty(artist)
+                && bpms.Count > 0f
+                && displayBpm != 0f
+                && audioClip != null
+                && notes.Count > 0;
+        }
+    }
+
+    public SongData(string title, string artist, float offset, List<KeyValuePair<float, float>> bpms, string musicPath, float displayBpm, Dictionary<Difficulty, List<NoteData>> notes)
     {
         this.title = title;
         this.artist = artist;

@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class Bar
 {
-    public List<Note> notes = new List<Note>();
+    public List<NoteData> notes = new List<NoteData>();
 }
