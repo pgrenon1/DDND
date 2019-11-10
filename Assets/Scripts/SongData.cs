@@ -1,49 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using Sirenix.OdinInspector;
+using Sirenix.Serialization;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using UnityEditor;
 using UnityEngine;
 
-[System.Serializable]
-public class SongData
+[CreateAssetMenu(fileName = "Song_", menuName = "Song"), ShowOdinSerializedPropertiesInInspector]
+public class SongData : OdinSerializedScriptableObject
 {
-    public string title;
-    public string artist;
-    public float offset;
-    public List<KeyValuePair<float, float>> bpms;
-    public float displayBpm;
-    public string musicPath;
-    public AudioClip audioClip;
-    public Dictionary<Difficulty, List<NoteData>> notes;
+    [InlineButton("LoadSongData")]
+    [FilePath(Extensions = "sm")]
+    public string smPath;
+    [System.NonSerialized, OdinSerialize]
+    public Song song;
 
-    public bool IsValid
+    private void LoadSongData()
     {
-        get
-        {
-            return !string.IsNullOrEmpty(title)
-                && !string.IsNullOrEmpty(artist)
-                && bpms.Count > 0f
-                && displayBpm != 0f
-                && audioClip != null
-                && notes.Count > 0;
-        }
-    }
+        var songLoader = new SongLoader();
+        var songDataTemp = songLoader.LoadSong(smPath);
 
-    public SongData(string title, string artist, float offset, List<KeyValuePair<float, float>> bpms, string musicPath, float displayBpm, Dictionary<Difficulty, List<NoteData>> notes)
-    {
-        this.title = title;
-        this.artist = artist;
-        this.offset = offset;
-        this.bpms = bpms;
-        this.musicPath = musicPath;
-        this.audioClip = (AudioClip)Resources.Load(musicPath);
-        this.displayBpm = displayBpm;
-        this.notes = notes;
-    }
-}
+        if (songDataTemp == null || !songDataTemp.IsValid)
+            return;
 
-public enum Difficulty
-{
-    Beginner,
-    Easy,
-    Medium,
-    Hard,
-    Challenge
+        Debug.Log("Loaded : " + songDataTemp.title);
+
+        song = songDataTemp;
+    }
 }

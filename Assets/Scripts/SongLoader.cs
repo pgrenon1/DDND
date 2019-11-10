@@ -3,22 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class SongLoader : SingletonMonoBehaviour<SongLoader>
+public class SongLoader
 {
-    public string songPath = "";
+    //public List<SongData> Songs { get; private set; } = new List<SongData>();
 
-    public List<SongData> Songs { get; private set; } = new List<SongData>();
-
-    public void LoadSongs()
+    public Song LoadSong(string smPath)
     {
-        Songs.Add(LoadSongData(songPath));
+        return LoadSongData(smPath);
     }
 
-    private SongData LoadSongData(string path)
+    private Song LoadSongData(string path)
     {
         var lines = File.ReadAllLines(path);
 
-        //Get the file directory, and make sure it ends with either forward or backslash
+        //Get the file's directory, and make sure it ends with either forward or backslash
         var fileDir = Path.GetDirectoryName(path);
         if (!fileDir.EndsWith("\\") && !fileDir.EndsWith("/"))
         {
@@ -66,7 +64,8 @@ public class SongLoader : SingletonMonoBehaviour<SongLoader>
                     //    break;
                     case "MUSIC":
                         var extensionIndex = line.LastIndexOf('.');
-                        musicPath = "Songs/" + line.Substring(0, extensionIndex).Substring(line.IndexOf(':')).Trim(':').Trim(';').Trim();
+                        var songsDir = fileDir.TrimStart("Assets\\Resources\\".ToCharArray());
+                        musicPath = songsDir + line.Substring(line.IndexOf(':') + 1).Trim(line.Substring(extensionIndex).ToCharArray());
                         var music = Resources.Load<AudioClip>(musicPath);
                         if (!music)
                         {
@@ -181,7 +180,7 @@ public class SongLoader : SingletonMonoBehaviour<SongLoader>
         if (isValid)
         {
             var musicPathRelative = musicPath;
-            var songData = new SongData(title, artist, offset, bpms, musicPathRelative, displayBpm, notes);
+            var songData = new Song(title, artist, offset, bpms, musicPathRelative, displayBpm, notes);
             return songData;
         }
         else
@@ -223,7 +222,7 @@ public class SongLoader : SingletonMonoBehaviour<SongLoader>
                         var timeStampInBar = j * secPerBar / numberOfNotesInBar;
                         var timeStamp = timeStampInBar + barCount * secPerBar;
 
-                        barNotes[j].Timestamp = timeStamp;
+                        barNotes[j].timestamp = timeStamp;
 
                         if (bpmIndex < bpms.Count - 1)
                         {

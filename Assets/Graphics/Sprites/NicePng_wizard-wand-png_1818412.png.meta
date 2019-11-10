@@ -1,0 +1,691 @@
+fileFormatVersion: 2
+guid: f96bbd167897b404a9b712056ad697cc
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6576125552494909489
+    second: NicePng_wizard-wand-png_1818412_0
+  - first:
+      213: 2911979149097393016
+    second: NicePng_wizard-wand-png_1818412_2
+  - first:
+      213: 1247130419301723780
+    second: NicePng_wizard-wand-png_1818412_3
+  - first:
+      213: -4692997418055729754
+    second: NicePng_wizard-wand-png_1818412_5
+  - first:
+      213: -2648660951826517506
+    second: NicePng_wizard-wand-png_1818412_6
+  - first:
+      213: -8683644877510771136
+    second: NicePng_wizard-wand-png_1818412_7
+  - first:
+      213: -2864228826137759669
+    second: NicePng_wizard-wand-png_1818412_8
+  - first:
+      213: -8758924606616458277
+    second: NicePng_wizard-wand-png_1818412_9
+  - first:
+      213: 5862456659966874022
+    second: NicePng_wizard-wand-png_1818412_10
+  - first:
+      213: -1066753005898881582
+    second: NicePng_wizard-wand-png_1818412_11
+  - first:
+      213: -1891583575371979239
+    second: NicePng_wizard-wand-png_1818412_12
+  - first:
+      213: -2973949987768687275
+    second: NicePng_wizard-wand-png_1818412_13
+  - first:
+      213: 8186029044189820765
+    second: NicePng_wizard-wand-png_1818412_14
+  - first:
+      213: 4295204229553849265
+    second: NicePng_wizard-wand-png_1818412_15
+  - first:
+      213: -8938540189674151696
+    second: NicePng_wizard-wand-png_1818412_16
+  - first:
+      213: 8270422413202465966
+    second: NicePng_wizard-wand-png_1818412_17
+  - first:
+      213: 5411040046545555691
+    second: NicePng_wizard-wand-png_1818412_18
+  - first:
+      213: -7049928432857535774
+    second: NicePng_wizard-wand-png_1818412_19
+  - first:
+      213: -747347443156104043
+    second: NicePng_wizard-wand-png_1818412_20
+  - first:
+      213: -7786942023416871379
+    second: NicePng_wizard-wand-png_1818412_21
+  - first:
+      213: -2038552531264737549
+    second: NicePng_wizard-wand-png_1818412_22
+  - first:
+      213: -5733127219337532321
+    second: NicePng_wizard-wand-png_1818412_23
+  - first:
+      213: -4321682816652539289
+    second: NicePng_wizard-wand-png_1818412_24
+  - first:
+      213: -1466613283967349974
+    second: NicePng_wizard-wand-png_1818412_25
+  externalObjects: {}
+  serializedVersion: 10
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: -1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 375
+        width: 130
+        height: 130
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ab5fc31d09b3ee34fbdfa1a5c2947f7d
+      internalID: 6576125552494909489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_2
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 411
+        width: 128
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f086cc79863a4e41aeed200493a472e
+      internalID: 2911979149097393016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_3
+      rect:
+        serializedVersion: 2
+        x: 401
+        y: 376
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 02b13330a3349ef44a53b98482c5c1cd
+      internalID: 1247130419301723780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_5
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 188
+        width: 102
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 085765bb079224c4295e26a2422fc72c
+      internalID: -4692997418055729754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_6
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 273
+        width: 41
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 29b7308fb1ee1094c84b805acb972bd8
+      internalID: -2648660951826517506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_7
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 273
+        width: 43
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 51338801ece42c447a5a21d013cbcac9
+      internalID: -8683644877510771136
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_8
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 259
+        width: 58
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2ffff09307a649e47adfe98f7ab52413
+      internalID: -2864228826137759669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_9
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 217
+        width: 20
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 45b971aec4d2e6749ba01c70f790c1f1
+      internalID: -8758924606616458277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_10
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 281
+        width: 80
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d872307ec9a0c647988599ceb3c3582
+      internalID: 5862456659966874022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_11
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 219
+        width: 34
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 83b6360344b638248996a852681948ff
+      internalID: -1066753005898881582
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_12
+      rect:
+        serializedVersion: 2
+        x: 489
+        y: 217
+        width: 20
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e4f733607121154ebf6ba91c2935cc4
+      internalID: -1891583575371979239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_13
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 216
+        width: 34
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 213f901a7c1d4a6428cc99fc32d73207
+      internalID: -2973949987768687275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_14
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 208
+        width: 57
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a4252af727efb94488853b4864a8644
+      internalID: 8186029044189820765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_15
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 188
+        width: 99
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1e79e5064191e3a4586e69e502a135ee
+      internalID: 4295204229553849265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_16
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 188
+        width: 80
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b34b8ac334cf62f4a97fd734005c6fee
+      internalID: -8938540189674151696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_17
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 32
+        width: 32
+        height: 96
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 794bd3b7d3322ae4f83d95330188efb7
+      internalID: 8270422413202465966
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_18
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 70
+        width: 72
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6bacb6f3bccdf3344a093a270e1f87f5
+      internalID: 5411040046545555691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_19
+      rect:
+        serializedVersion: 2
+        x: 401
+        y: 59
+        width: 128
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b3716c2120f3dea4e8f2bbf6eb2cfd5c
+      internalID: -7049928432857535774
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_20
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 47
+        width: 128
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7711c3808993dff41ae0d9e5261a1e3c
+      internalID: -747347443156104043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_21
+      rect:
+        serializedVersion: 2
+        x: 429
+        y: 0
+        width: 72
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 339ae3fde60f5df42b6ad3ffbdf82064
+      internalID: -7786942023416871379
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_22
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 0
+        width: 74
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3a88dd852fdd39c4395c6914a7e4ca0c
+      internalID: -2038552531264737549
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_23
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 6
+        width: 23
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 32fc713bb2192e64e8fa60124d94ccf0
+      internalID: -5733127219337532321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_24
+      rect:
+        serializedVersion: 2
+        x: 261
+        y: 12
+        width: 8
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d955d7b77496f74ebe24c87834ed8fc
+      internalID: -4321682816652539289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: NicePng_wizard-wand-png_1818412_25
+      rect:
+        serializedVersion: 2
+        x: 275
+        y: 6
+        width: 23
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a60cf0154944daf4b914fc5d68ae912c
+      internalID: -1466613283967349974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: dd252dc72f1f31c4db8db9dbcd060163
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,62 +1,203 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerMenu : MonoBehaviour
+public class PlayerMenu : BaseBehaviour
 {
-    public MenuOption startingOption;
-    [Header("Main")]
-    public ToggleGroup actionToggleGroup;
+    #region Inspector Attributes
+    public float scrollSpeed = 0.15f;
+    public MenuOption loadoutObjectPrefab;
+    public LoadoutSlot loadoutSlotA;
+    public LoadoutSlot loadoutSlotB;
+    public MenuOption readyMenuOption;
+    #endregion
 
-    [Header("Magic")]
-    public ToggleGroup magicToggleGroup;
-    public List<MenuOption> spellsToggles = new List<MenuOption>();
+    #region Properties
+    public LoadoutSlot FocusedLoadoutSlot { get; set; }
+    public MenuState PreviousMenuState { get; set; }
+    public MenuState CurrentMenuState { get; private set; }
+    public MenuOption CurrentMenuOption { get; private set; }
+    public Player Player { get; set; }
 
-    private MenuOption _selected;
-    public MenuOption Selected
+    private MenuOption _selectedMenuOption;
+    public MenuOption SelectedMenuOption
     {
         get
         {
-            return _selected;
+            return _selectedMenuOption;
         }
         private set
         {
-            if (_selected)
-                _selected.Deselect();
+            if (_selectedMenuOption)
+                _selectedMenuOption.Deselect();
 
-            _selected = value;
-            _selected.Select();
+            _selectedMenuOption = value;
+            _selectedMenuOption.Select();
+
+            if (SelectionChanged != null)
+                SelectionChanged(_selectedMenuOption);
         }
     }
 
-    private void Start()
+    private bool _isVisible;
+    public bool IsVisible
     {
-        Selected = startingOption;
+        get
+        {
+            return _isVisible;
+        }
+        private set
+        {
+            _isVisible = value;
+
+            ApplyVisibility();
+        }
     }
+
+    private InfoPanel _infoPanel;
+    private InfoPanel InfoPanel
+    {
+        get
+        {
+            if (_infoPanel == null)
+                _infoPanel = GetComponentInChildren<InfoPanel>();
+
+            return _infoPanel;
+        }
+    }
+    #endregion
+
+    public delegate void OnSelectionChanged(MenuOption Selected);
+    public event OnSelectionChanged SelectionChanged;
 
     public void MoveSelection(Direction direction)
     {
-        Selectable newSelected = null;
         switch (direction)
         {
             case Direction.Left:
-                newSelected = Selected.Toggle.FindSelectableOnLeft();
+                if (FocusedLoadoutSlot == loadoutSlotB)
+                    SwitchLoadoutSlot(loadoutSlotA);
+                else
+                    Select(SelectedMenuOption.Toggle.FindSelectableOnLeft());
+                //PreviousMenu();
                 break;
             case Direction.Down:
-                newSelected = Selected.Toggle.FindSelectableOnDown();
+                Select(SelectedMenuOption.Toggle.FindSelectableOnDown());
                 break;
             case Direction.Up:
-                newSelected = Selected.Toggle.FindSelectableOnUp();
+                Select(SelectedMenuOption.Toggle.FindSelectableOnUp());
                 break;
             case Direction.Right:
-                newSelected = Selected.Toggle.FindSelectableOnRight();
+                if (FocusedLoadoutSlot == loadoutSlotA)
+                    SwitchLoadoutSlot(loadoutSlotB);
+                else
+                    Select(SelectedMenuOption.Toggle.FindSelectableOnRight());
+                //Confirm();
                 break;
         }
+    }
 
-        if (newSelected != null)
+    private void SwitchLoadoutSlot(LoadoutSlot loadoutSlot)
+    {
+        if (loadoutSlot.Picked != null)
         {
-            Selected = newSelected.GetComponent<MenuOption>();
+            Select(loadoutSlot.Picked.Toggle);
         }
+        else
+        {
+            Select(loadoutSlot.MenuOptions.First().Value.Toggle);
+        }
+    }
+
+    public void ExitMenu()
+    {
+        CurrentMenuState = MenuState.None;
+        Hide();
+    }
+
+    //private void Confirm()
+    //{
+    //    SelectedMenuOption.Confirm();
+    //    //switch (CurrentMenuState)
+    //    //{
+    //    //    case MenuState.Inventory:
+    //    //        var currentItemMenuOption = SelectedMenuOption as ItemMenuOption;
+    //    //        if (currentItemMenuOption)
+    //    //        {
+    //    //            currentItemMenuOption.Confirm();
+    //    //        }
+    //    //        break;
+    //    //    case MenuState.Action:
+    //    //        SelectedMenuOption.Confirm();
+    //    //        break;
+    //    //}
+    //}
+
+    public void RefreshLoadout()
+    {
+        var loadoutObjects = new List<LoadoutObject>();
+
+        loadoutObjects.AddRange(Player.Items);
+        loadoutObjects.AddRange(Player.Skills);
+
+        loadoutSlotA.Refresh(loadoutObjects);
+        loadoutSlotB.Refresh(loadoutObjects);
+    }
+
+    //public void InitActionMenu()
+    //{
+    //    CurrentMenuState = MenuState.Action;
+
+    //    attackMenuOption.Toggle.interactable = true;
+    //    defendMenuOption.Toggle.interactable = true;
+
+    //    Selected = attackMenuOption;
+    //}
+
+    //public void InitInventoryMenu()
+    //{
+    //    CurrentMenuState = MenuState.Inventory;
+
+    //    attackMenuOption.Deselect();
+    //    defendMenuOption.Deselect();
+
+    //    attackMenuOption.Toggle.interactable = false;
+    //    defendMenuOption.Toggle.interactable = false;
+
+    //    Inventory.Instance.PopulateInventory(Player.Items);
+
+    //    Inventory.Instance.Show();
+
+    //    Select(Inventory.Instance.ItemMenuOptions[0]);
+    //}
+
+    public void Select(Selectable selectable)
+    {
+        if (selectable == null)
+            return;
+
+        var menuOption = selectable.GetComponent<MenuOption>();
+        SelectedMenuOption = menuOption;
+
+        InfoPanel.UpdateItemContent()
+    }
+
+    private void ApplyVisibility()
+    {
+        CanvasGroup.alpha = IsVisible ? 1f : 0f;
+        CanvasGroup.interactable = IsVisible;
+    }
+
+    public void Show()
+    {
+        IsVisible = true;
+    }
+
+    public void Hide()
+    {
+        IsVisible = false;
     }
 }

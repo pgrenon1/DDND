@@ -1,86 +1,136 @@
 ﻿using Sirenix.OdinInspector;
+using Sirenix.Serialization;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[ShowOdinSerializedPropertiesInInspector]
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
-
     public AudioSource musicSourcePrefab;
-    public List<PlayerController> playerControllers = new List<PlayerController>();
-    [Title("Settings")]
-    public float delay = 10f;
+    public List<Player> players = new List<Player>();
+    public List<Enemy> enemyPrefabs = new List<Enemy>();
+    public Transform enemyParent;
+    public Transform playerStage;
 
-    public int ActiveIndex { get; private set; }
-    public PlayerController ActivePlayer { get { return playerControllers[ActiveIndex]; } }
+    public Player ActivePlayer { get { return players[_activePlayerIndex]; } }
     public bool SongIsPlaying { get; set; }
+    public Enemy CurrentEnemy { get; set; }
 
-    private SongData _currentSong;
-    public SongData CurrentSong
+    [System.NonSerialized, OdinSerialize]
+    public Song currentSong;
+    public Song CurrentSong
     {
         get
         {
-            return _currentSong;
+            return currentSong;
         }
         set
         {
-            _currentSong = value;
-            _musicSource.clip = _currentSong.audioClip;
+            currentSong = value;
+            _musicSource.clip = currentSong.audioClip;
             _musicSource.time = 0f;
         }
     }
 
-    private int previousFirstIndex = 0;
+    private int _activePlayerIndex = 0;
     private AudioSource _musicSource;
     private SongLoader _songLoader;
+    private Enemy _currentEnemy;
 
-    private void Start()
+    protected override void Awake()
     {
+        base.Awake();
+
+        _songLoader = new SongLoader();
+
         _musicSource = Instantiate(musicSourcePrefab, transform);
 
-        _songLoader = GetComponent<SongLoader>();
-        _songLoader.LoadSongs();
-
-        // TEMP
-        CurrentSong = SongLoader.Instance.Songs[0];
-
-        previousFirstIndex = ActiveIndex;
+        SpawnEnemy(enemyPrefabs[0]);
     }
+
+    private void SpawnEnemy(Enemy enemyPrefab)
+    {
+        var enemy = Instantiate(enemyPrefab, enemyParent.position, Quaternion.identity, enemyParent);
+        enemy.transform.LookAt(playerStage);
+
+        _currentEnemy = enemy;
+    }
+
+    //private void StartPlaying()
+    //{
+    //    _activePlayerIndex = _firstIndex;
+    //    FirstPlayer = players[_firstIndex];
+    //}
+
+    //public void ChooseSong(Song songData)
+    //{
+    //    CurrentSong = songData;
+    //}
 
     public void StartSong()
     {
         _musicSource.Play();
 
-        foreach (var playerController in playerControllers)
+        foreach (var playerController in players)
         {
-            playerController.Conductor.Play();
+            playerController.StartDancing();
         }
 
         SongIsPlaying = true;
     }
 
-    public void NextTurn()
+    //public void NextTurn()
+    //{
+    //    _activePlayerIndex++;
+
+    //    if (_activePlayerIndex > playerControllers.Count - 1)
+    //    {
+    //        _firstIndex++;
+
+    //        if (_firstIndex >= playerControllers.Count - 1)
+    //        {
+    //            _firstIndex = 0;
+    //        }
+
+    //        _activePlayerIndex = _firstIndex;
+
+    //        FirstPlayer = playerControllers[_firstIndex];
+    //    }
+
+    //    playerControllers[_activePlayerIndex].StartTurn();
+    //}
+
+    //public void StartActionMenus()
+    //{
+    //    Inventory.Instance.Hide();
+
+    //    foreach (var playerController in players)
+    //    {
+    //        playerController.PlayerMenu.InitActionMenu();
+    //    }
+    //}
+
+    private void Update()
     {
-        ActiveIndex++;
-
-        if (ActiveIndex > playerControllers.Count - 1)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            var newFirstIndex = previousFirstIndex + 1;
-
-            if (newFirstIndex >= playerControllers.Count - 1)
+            foreach (var player in players)
             {
-                newFirstIndex = 0;
+                player.PickLoadout();
             }
+            //FirstPlayer.StartTurn();
+        }
 
-            ActiveIndex = newFirstIndex;
-            previousFirstIndex = newFirstIndex;
+        if (players.TrueForAll(player => player.IsReady))
+        {
+            StartSong();
         }
     }
 
-    public IEnumerator DelayAfterLastTurn()
+    public void SetupSong(Song songToPlay)
     {
-        yield return new WaitForSeconds(delay);
-
-        NextTurn();
+        _musicSource.clip = songToPlay.audioClip;
     }
 }

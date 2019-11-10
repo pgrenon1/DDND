@@ -50,32 +50,32 @@ public class Note : MonoBehaviour
         }
     }
 
-    public bool IsOpen
-    {
-        get
-        {
-            return Conductor.SongPositionInSeconds >= TimeStamp - Conductor.okWindow / 2
-                && Conductor.SongPositionInSeconds <= TimeStamp + Conductor.okWindow / 2;
-        }
-    }
+    //public bool IsOpen
+    //{
+    //    get
+    //    {
+    //        return Conductor.SongPositionInSeconds >= TimeStamp - Conductor.okWindow / 2
+    //            && Conductor.SongPositionInSeconds <= TimeStamp + Conductor.okWindow / 2;
+    //    }
+    //}
 
-    public bool IsGood
-    {
-        get
-        {
-            return Conductor.SongPositionInSeconds >= TimeStamp - Conductor.goodWindow / 2
-                && Conductor.SongPositionInSeconds <= TimeStamp + Conductor.goodWindow / 2;
-        }
-    }
+    //public bool IsGood
+    //{
+    //    get
+    //    {
+    //        return Conductor.SongPositionInSeconds >= TimeStamp - Conductor.goodWindow / 2
+    //            && Conductor.SongPositionInSeconds <= TimeStamp + Conductor.goodWindow / 2;
+    //    }
+    //}
 
-    public bool IsPerfect
-    {
-        get
-        {
-            return Conductor.SongPositionInSeconds >= TimeStamp - Conductor.perfectWindow / 2
-                && Conductor.SongPositionInSeconds <= TimeStamp + Conductor.perfectWindow / 2;
-        }
-    }
+    //public bool IsPerfect
+    //{
+    //    get
+    //    {
+    //        return Conductor.SongPositionInSeconds >= TimeStamp - Conductor.perfectWindow / 2
+    //            && Conductor.SongPositionInSeconds <= TimeStamp + Conductor.perfectWindow / 2;
+    //    }
+    //}
 
     public void Travel(Vector3 targetPosition, float timeInAdvance)
     {

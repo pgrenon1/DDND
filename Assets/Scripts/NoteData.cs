@@ -3,29 +3,29 @@
 [System.Serializable]
 public class NoteData
 {
-    public float Timestamp { get; set; }
-    public char Left { get; set; }
-    public char Right { get; set; }
-    public char Up { get; set; }
-    public char Down { get; set; }
+    public float timestamp;
+    public char left;
+    public char right;
+    public char up;
+    public char down;
     public List<char> Chars { get; set; }
 
     public bool IsEmpty
     {
         get
         {
-            return Left == '0' && Right == '0' && Up == '0' && Down == '0';
+            return left == '0' && right == '0' && up == '0' && down == '0';
         }
     }
 
     public NoteData(char left, char right, char up, char down)
     {
-        Left = left;
-        Right = right;
-        Up = up;
-        Down = down;
+        this.left = left;
+        this.right = right;
+        this.up = up;
+        this.down = down;
 
-        Chars = new List<char>() { Left, Right, Up, Down };
+        Chars = new List<char>() { this.left, this.right, this.up, this.down };
     }
 
     public NoteData(string noteLine) : this(noteLine[0], noteLine[1], noteLine[2], noteLine[3])
@@ -35,6 +35,6 @@ public class NoteData
 
     public override string ToString()
     {
-        return Left.ToString() + Up.ToString() + Right.ToString() + Down.ToString() + " at " + Timestamp;
+        return left.ToString() + up.ToString() + right.ToString() + down.ToString() + " at " + timestamp;
     }
 }

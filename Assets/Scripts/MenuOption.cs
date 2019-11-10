@@ -4,12 +4,15 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuOption : MonoBehaviour
+public class MenuOption : BaseBehaviour
 {
     public TextMeshProUGUI optionText;
     public Image mainImage;
     public Image leftArrow;
     public Image rightArrow;
+
+    public delegate void OnConfirm();
+    public OnConfirm OnOptionConfirm;
 
     private Toggle _toggle;
     public Toggle Toggle
@@ -23,11 +26,8 @@ public class MenuOption : MonoBehaviour
         }
     }
 
-    private bool _isSelected;
-
-    public void Select()
+    public virtual void Select()
     {
-        _isSelected = true;
         Toggle.Select();
 
         if (leftArrow)
@@ -39,12 +39,15 @@ public class MenuOption : MonoBehaviour
 
     public void Deselect()
     {
-        _isSelected = false;
-
         if (leftArrow)
             leftArrow.enabled = false;
 
         if (rightArrow)
             rightArrow.enabled = false;
+    }
+
+    public virtual void Confirm()
+    {
+        OnOptionConfirm();
     }
 }

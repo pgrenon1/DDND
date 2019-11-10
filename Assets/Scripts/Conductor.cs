@@ -36,24 +36,51 @@ public class Conductor : MonoBehaviour
 
     [Header("Settings")]
     public int beatsInAdvance = 4;
-    public Difficulty currentDifficulty;
     public float okWindow = 0.5f;
     public float goodWindow = 0.3f;
     public float perfectWindow = 0.15f;
+    public float comboValue = 0.1f;
+    public float noteValueOk = 1f;
+    public float noteValueGood = 1f;
+    public float noteValuePerfect = 1f;
+    public bool canChangeDifficulty = false;
 
-    public SongData CurrentSong
+    private Difficulty _previousDifficulty;
+    public Difficulty _currentDifficulty;
+    public Difficulty CurrentDifficulty
+    {
+        get
+        {
+            return _currentDifficulty;
+        }
+        set
+        {
+            if (value != _currentDifficulty)
+            {
+                _previousDifficulty = _currentDifficulty;
+                _currentDifficulty = value;
+
+                ChangeDifficulty();
+            }
+        }
+    }
+
+
+    public Song CurrentSong
     {
         get
         {
             return GameManager.Instance.CurrentSong;
         }
     }
-    public PlayerController PlayerController { get; set; }
+    public Player PlayerController { get; set; }
     public float SongPositionInSeconds { get; private set; }
     public List<Note> ActiveNotes { get; private set; } = new List<Note>();
 
+    private float _currentComboScore;
+    private int _currentComboCount;
+    private float _score;
     private float _startTime;
-    private int _nextIndex;
     private float _timeInAdvance;
     private int _currentBPMIndex = 0;
     private int _nextNoteIndex = 0;
@@ -62,15 +89,46 @@ public class Conductor : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            PlayerController.IsPlaying = true;
-        }
+        UpdateCheats();
 
         if (!_songIsPlaying)
             return;
 
         UpdateSong();
+
+        UpdateNoteColors();
+    }
+
+    private void UpdateCheats()
+    {
+        if (!canChangeDifficulty)
+            return;
+
+        if (Input.GetKeyDown(KeyCode.Alpha1) && CurrentSong.HasDifficulty(Difficulty.Beginner))
+            CurrentDifficulty = Difficulty.Beginner;
+        if (Input.GetKeyDown(KeyCode.Alpha2) && CurrentSong.HasDifficulty(Difficulty.Easy))
+            CurrentDifficulty = Difficulty.Easy;
+        if (Input.GetKeyDown(KeyCode.Alpha3) && CurrentSong.HasDifficulty(Difficulty.Medium))
+            CurrentDifficulty = Difficulty.Medium;
+        if (Input.GetKeyDown(KeyCode.Alpha4) && CurrentSong.HasDifficulty(Difficulty.Hard))
+            CurrentDifficulty = Difficulty.Hard;
+        if (Input.GetKeyDown(KeyCode.Alpha5) && CurrentSong.HasDifficulty(Difficulty.Challenge))
+            CurrentDifficulty = Difficulty.Hard;
+    }
+
+    private void ChangeDifficulty()
+    {
+        var tentativeTimestamp = SongPositionInSeconds + _timeInAdvance;
+
+        foreach (var noteData in CurrentSong.notes[CurrentDifficulty])
+        {
+            if (noteData.timestamp > SongPositionInSeconds + _timeInAdvance)
+            {
+                _nextNoteIndex = CurrentSong.notes[CurrentDifficulty].IndexOf(noteData);
+                _nextNote = noteData;
+                break;
+            }
+        }
     }
 
     public void Play()
@@ -79,36 +137,13 @@ public class Conductor : MonoBehaviour
 
         _timeInAdvance = beatsInAdvance * 60f / CurrentSong.bpms[_currentBPMIndex].Value;
 
-        _nextNote = CurrentSong.notes[currentDifficulty][_nextNoteIndex];
+        _nextNote = CurrentSong.notes[CurrentDifficulty][_nextNoteIndex];
 
         _songIsPlaying = true;
     }
 
-    private void UpdateSong()
+    private void UpdateNoteColors()
     {
-        SongPositionInSeconds = (float)(AudioSettings.dspTime - _startTime + CurrentSong.offset);
-
-        if (CurrentSong.bpms.Count > _currentBPMIndex + 1)
-        {
-            if (SongPositionInSeconds > CurrentSong.bpms[_currentBPMIndex + 1].Key)
-            {
-                _currentBPMIndex++;
-                _timeInAdvance = beatsInAdvance * 60f / CurrentSong.bpms[_currentBPMIndex].Value;
-            }
-        }
-
-        if (SongPositionInSeconds + _timeInAdvance >= _nextNote.Timestamp)
-        {
-            if (!_nextNote.IsEmpty)
-            {
-                SpawnNote(_nextNote);
-            }
-
-            _nextNoteIndex++;
-
-            _nextNote = CurrentSong.notes[currentDifficulty][_nextNoteIndex];
-        }
-
         foreach (var note in ActiveNotes)
         {
             if (note != null && note.Image != null)
@@ -131,6 +166,32 @@ public class Conductor : MonoBehaviour
         }
     }
 
+    private void UpdateSong()
+    {
+        SongPositionInSeconds = (float)(AudioSettings.dspTime - _startTime + CurrentSong.offset);
+
+        if (CurrentSong.bpms.Count > _currentBPMIndex + 1)
+        {
+            if (SongPositionInSeconds > CurrentSong.bpms[_currentBPMIndex + 1].Key)
+            {
+                _currentBPMIndex++;
+                _timeInAdvance = beatsInAdvance * 60f / CurrentSong.bpms[_currentBPMIndex].Value;
+            }
+        }
+
+        if (SongPositionInSeconds + _timeInAdvance >= _nextNote.timestamp)
+        {
+            if (!_nextNote.IsEmpty)
+            {
+                SpawnNote(_nextNote);
+            }
+
+            _nextNoteIndex++;
+
+            _nextNote = CurrentSong.notes[CurrentDifficulty][_nextNoteIndex];
+        }
+    }
+
     public void JudgeHit(Direction direction)
     {
         Note noteToDelete = null;
@@ -140,20 +201,17 @@ public class Conductor : MonoBehaviour
             if (note.Direction != direction)
                 continue;
 
-            if (note.IsPerfect)
+            if (TryScoreNote(note))
             {
+                _currentComboCount++;
                 noteToDelete = note;
                 break;
             }
-            else if (note.IsGood)
+            else
             {
-                noteToDelete = note;
-                break;
-            }
-            else if (note.IsOpen)
-            {
-                noteToDelete = note;
-                break;
+                //var comboMultiplier = _currentComboCount * comboValue;
+                //_score += _currentComboScore * comboMultiplier;
+                _currentComboCount = 0;
             }
         }
 
@@ -165,9 +223,38 @@ public class Conductor : MonoBehaviour
         }
     }
 
+    private bool TryScoreNote(Note note)
+    {
+        bool noteScored = false;
+
+        var noteScore = GetNoteValue(note.Timing) * (1 + _currentComboCount * comboValue);
+
+        if (noteScore > 0f)
+        {
+            noteScored = true;
+        }
+
+        return noteScored;
+    }
+
+    private float GetNoteValue(Timing timing)
+    {
+        switch (timing)
+        {
+            case Timing.Perfect:
+                return noteValuePerfect;
+            case Timing.Good:
+                return noteValueGood;
+            case Timing.Ok:
+                return noteValueOk;
+            default:
+                return 0f;
+        }
+    }
+
     private void SpawnNote(NoteData noteData)
     {
-        if (noteData.IsEmpty || PlayerController.IsPlaying)
+        if (noteData.IsEmpty || !PlayerController.IsDancing)
             return;
 
         for (int i = 0; i < noteData.Chars.Count; i++)
@@ -179,7 +266,7 @@ public class Conductor : MonoBehaviour
                 var notePrefab = GetNotePrefab((Direction)i);
 
                 var note = Instantiate(notePrefab, spawnPosition, Quaternion.identity, transform);
-                note.TimeStamp = noteData.Timestamp;
+                note.TimeStamp = noteData.timestamp;
                 note.Conductor = this;
                 note.Direction = (Direction)i;
                 note.Travel(judgmentPosition, _timeInAdvance);
