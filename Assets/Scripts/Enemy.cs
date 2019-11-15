@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : Targetable
 {
     public List<SongData> songDatas = new List<SongData>();
 

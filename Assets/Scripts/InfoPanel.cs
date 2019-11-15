@@ -23,21 +23,29 @@ public class InfoPanel : MonoBehaviour
         }
     }
 
-    private void UpdateContent(LoadoutObject loadoutObject)
+    public void UpdateContent(LoadoutObject loadoutObject)
     {
         image.sprite = loadoutObject.sprite;
         title.text = loadoutObject.objectName;
         category.text = loadoutObject.GetType().ToString();
         description.text = loadoutObject.description;
+
+        var item = loadoutObject as Item;
+        if (item != null)
+            UpdateItemContent(item);
+
+        var skill = loadoutObject as Skill;
+        if (skill != null)
+            UpdateSkillContent(skill);
     }
 
     public void UpdateSkillContent(Skill skill)
     {
-        UpdateContent(skill);
+
     }
 
     public void UpdateItemContent(Item item)
     {
-        UpdateContent(item);
+
     }
 }

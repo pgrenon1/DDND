@@ -22,7 +22,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: songData
+    - Name: song
       Entry: 7
       Data: 0|Song, Assembly-CSharp
     - Name: title

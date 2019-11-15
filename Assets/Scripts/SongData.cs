@@ -24,6 +24,7 @@ public class SongData : OdinSerializedScriptableObject
             return;
 
         Debug.Log("Loaded : " + songDataTemp.title);
+        EditorUtility.SetDirty(this);
 
         song = songDataTemp;
     }

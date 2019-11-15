@@ -17,8 +17,6 @@ public class PlayerMenu : BaseBehaviour
 
     #region Properties
     public LoadoutSlot FocusedLoadoutSlot { get; set; }
-    public MenuState PreviousMenuState { get; set; }
-    public MenuState CurrentMenuState { get; private set; }
     public MenuOption CurrentMenuOption { get; private set; }
     public Player Player { get; set; }
 
@@ -58,7 +56,7 @@ public class PlayerMenu : BaseBehaviour
     }
 
     private InfoPanel _infoPanel;
-    private InfoPanel InfoPanel
+    public InfoPanel InfoPanel
     {
         get
         {
@@ -82,7 +80,6 @@ public class PlayerMenu : BaseBehaviour
                     SwitchLoadoutSlot(loadoutSlotA);
                 else
                     Select(SelectedMenuOption.Toggle.FindSelectableOnLeft());
-                //PreviousMenu();
                 break;
             case Direction.Down:
                 Select(SelectedMenuOption.Toggle.FindSelectableOnDown());
@@ -95,26 +92,34 @@ public class PlayerMenu : BaseBehaviour
                     SwitchLoadoutSlot(loadoutSlotB);
                 else
                     Select(SelectedMenuOption.Toggle.FindSelectableOnRight());
-                //Confirm();
                 break;
+        }
+    }
+
+    public void Confirm()
+    {
+        if (!Player.IsReady)
+        {
+            //Player.Loadout.SlotA = loadoutSlotA.LoadoutObjects[loadoutSlotA.PickedMenuOption];
+            //Player.Loadout.SlotB = loadoutSlotB.LoadoutObjects[loadoutSlotB.PickedMenuOption];
+            Player.IsReady = true;
         }
     }
 
     private void SwitchLoadoutSlot(LoadoutSlot loadoutSlot)
     {
-        if (loadoutSlot.Picked != null)
+        if (loadoutSlot.PickedMenuOption != null)
         {
-            Select(loadoutSlot.Picked.Toggle);
+            Select(loadoutSlot.PickedMenuOption.Toggle);
         }
         else
         {
-            Select(loadoutSlot.MenuOptions.First().Value.Toggle);
+            Select(loadoutSlot.LoadoutObjects.First().Key.Toggle);
         }
     }
 
     public void ExitMenu()
     {
-        CurrentMenuState = MenuState.None;
         Hide();
     }
 
@@ -181,8 +186,6 @@ public class PlayerMenu : BaseBehaviour
 
         var menuOption = selectable.GetComponent<MenuOption>();
         SelectedMenuOption = menuOption;
-
-        InfoPanel.UpdateItemContent()
     }
 
     private void ApplyVisibility()

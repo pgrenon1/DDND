@@ -3,104 +3,118 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum MenuState
+public class Player : Targetable
 {
-    Inventory,
-    Action,
-    Magic,
-    Ready,
-    None
-}
+    [Header("Loadout")]
+    [AssetSelector]
+    public List<ItemData> startingItemDatas = new List<ItemData>();
+    [AssetSelector]
+    public List<SkillData> startingSkillDatas = new List<SkillData>();
 
-public class Player : SerializedMonoBehaviour
-{
-    public List<Item> startingItems = new List<Item>();
-    public List<Skill> startingSkills = new List<Skill>();
+    [Header("Energy")]
+    public TextMeshProUGUI energyText;
+    public Image energyFill;
+    public int energyMax = 50;
+    public float energyGainPerSecond = 1f;
 
-    public Loadout Loadout { get; set; }
     public bool IsDancing { get; set; }
     public Conductor Conductor { get; private set; }
     public PlayerMenu PlayerMenu { get; private set; }
-    //public List<LoadoutObject> LoadoutObjects { get; set; } = new List<LoadoutObject>();
     public List<Item> Items { get; set; } = new List<Item>();
     public List<Skill> Skills { get; set; } = new List<Skill>();
+    public bool IsReady { get; set; }
+    public float Energy { get; set; }
+    public Enemy CurrentTarget { get; set; }
 
-    public bool IsReady
-    {
-        get
-        {
-            return PlayerMenu.CurrentMenuState == MenuState.Ready;
-        }
-    }
-
-    private void Start()
+    public void Init()
     {
         Conductor = GetComponentInChildren<Conductor>();
-        Conductor.PlayerController = this;
+        Conductor.Player = this;
 
         PlayerMenu = GetComponentInChildren<PlayerMenu>();
         PlayerMenu.Player = this;
 
         InitItems();
         InitSkills();
+
+        Energy = energyMax;
     }
 
     private void InitItems()
     {
-        foreach (var item in startingItems)
+        foreach (var itemData in startingItemDatas)
         {
-            Items.Add(item);
+            Items.Add(new Item(itemData));
         }
     }
 
     private void InitSkills()
     {
-        foreach (var skill in startingSkills)
+        foreach (var skillData in startingSkillDatas)
         {
-            Skills.Add(skill);
+            Skills.Add(new Skill(skillData));
         }
     }
 
     private void Update()
     {
         UpdateInputs();
+
+        UpdateEnergy();
+    }
+
+    private void UpdateEnergy()
+    {
+        var energyGain = Mathf.Min(energyGainPerSecond * Time.deltaTime, energyMax - Energy);
+
+        Energy += energyGain;
+
+        energyText.text = Mathf.CeilToInt(Energy).ToString();
+        energyFill.fillAmount = Energy / energyMax;
     }
 
     private void UpdateInputs()
     {
         if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            ButtonPressed(Direction.Left);
+            DirectionPressed(Direction.Left);
         }
 
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
         {
-            ButtonPressed(Direction.Up);
+            DirectionPressed(Direction.Up);
         }
 
         if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.DownArrow))
         {
-            ButtonPressed(Direction.Down);
+            DirectionPressed(Direction.Down);
         }
 
         if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.RightArrow))
         {
-            ButtonPressed(Direction.Right);
+            DirectionPressed(Direction.Right);
+        }
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            PlayerMenu.Confirm();
         }
     }
 
     public void StartDancing()
     {
-        PlayerMenu.ExitMenu();
-        foreach (var conductor in FindObjectsOfType<Conductor>())
-            conductor.Play();
+        PlayerMenu.gameObject.SetActive(false);
+
+        Conductor.Play();
+
         IsDancing = true;
     }
 
-    private void ButtonPressed(Direction direction)
+    private void DirectionPressed(Direction direction)
     {
         if (IsDancing)
         {
@@ -110,6 +124,8 @@ public class Player : SerializedMonoBehaviour
         {
             PlayerMenu.MoveSelection(direction);
         }
+
+        Conductor.DirectionFeedback(direction);
     }
 
     //public void StartTurn()
@@ -129,6 +145,6 @@ public class Player : SerializedMonoBehaviour
     {
         PlayerMenu.RefreshLoadout();
 
-        PlayerMenu.Select(PlayerMenu.loadoutSlotA.MenuOptions.First().Value.GetComponent<Selectable>());
+        PlayerMenu.Select(PlayerMenu.loadoutSlotA.LoadoutObjects.First().Key.GetComponent<Selectable>());
     }
 }

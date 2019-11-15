@@ -23,7 +23,6 @@ public class Conductor : MonoBehaviour
     public Note rightNote;
 
     [Header("Scene")]
-
     public RectTransform leftOrigin;
     public RectTransform upOrigin;
     public RectTransform downOrigin;
@@ -73,9 +72,10 @@ public class Conductor : MonoBehaviour
             return GameManager.Instance.CurrentSong;
         }
     }
-    public Player PlayerController { get; set; }
+    public Player Player { get; set; }
     public float SongPositionInSeconds { get; private set; }
     public List<Note> ActiveNotes { get; private set; } = new List<Note>();
+    public PlayerMenu PlayerMenu { get; private set; }
 
     private float _currentComboScore;
     private int _currentComboCount;
@@ -86,6 +86,11 @@ public class Conductor : MonoBehaviour
     private int _nextNoteIndex = 0;
     private NoteData _nextNote;
     private bool _songIsPlaying = false;
+
+    private void Start()
+    {
+        PlayerMenu = Player.PlayerMenu;
+    }
 
     private void Update()
     {
@@ -114,6 +119,25 @@ public class Conductor : MonoBehaviour
             CurrentDifficulty = Difficulty.Hard;
         if (Input.GetKeyDown(KeyCode.Alpha5) && CurrentSong.HasDifficulty(Difficulty.Challenge))
             CurrentDifficulty = Difficulty.Hard;
+    }
+
+    public void DirectionFeedback(Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.Left:
+                leftJudgment.DOPunchScale(Vector3.one / 3f, 0.15f).From();
+                break;
+            case Direction.Up:
+                upJudgment.DOPunchScale(Vector3.one / 3f, 0.15f).From();
+                break;
+            case Direction.Down:
+                downJudgment.DOPunchScale(Vector3.one / 3f, 0.15f).From();
+                break;
+            case Direction.Right:
+                rightJudgment.DOPunchScale(Vector3.one / 3f, 0.15f).From();
+                break;
+        }
     }
 
     private void ChangeDifficulty()
@@ -232,9 +256,17 @@ public class Conductor : MonoBehaviour
         if (noteScore > 0f)
         {
             noteScored = true;
+
+            ApplyNoteEffects(noteScore);
         }
 
         return noteScored;
+    }
+
+    private void ApplyNoteEffects(float noteScore)
+    {
+        PlayerMenu.loadoutSlotA.PickedLoadoutObject.Trigger(noteScore, Player.CurrentTarget);
+        PlayerMenu.loadoutSlotB.PickedLoadoutObject.Trigger(noteScore, Player.CurrentTarget);
     }
 
     private float GetNoteValue(Timing timing)
@@ -254,7 +286,7 @@ public class Conductor : MonoBehaviour
 
     private void SpawnNote(NoteData noteData)
     {
-        if (noteData.IsEmpty || !PlayerController.IsDancing)
+        if (noteData.IsEmpty/* || !Player.IsDancing*/)
             return;
 
         for (int i = 0; i < noteData.Chars.Count; i++)
@@ -325,16 +357,4 @@ public class Conductor : MonoBehaviour
                 return Vector3.zero;
         }
     }
-
-    //public void Pulse(Transform transform, float endValue, float duration)
-    //{
-    //    transform.DOPunchScale(Vector3.one * endValue, duration).From();
-    //}
-
-    //public void PulseAndDie(Transform transform, float endValue, float duration)
-    //{
-    //    var copy = Instantiate(transform.gameObject, transform.position, Quaternion.identity, transform);
-    //    copy.GetComponent<Image>().DOFade(0, duration).OnComplete(() => Destroy(copy));
-    //    copy.transform.DOScale(Vector3.one * endValue, duration);
-    //}
 }

@@ -52,4 +52,16 @@ public class BaseBehaviour : MonoBehaviour
             return _camera;
         }
     }
+
+    private RectTransform _rectTransform;
+    public RectTransform RectTransform
+    {
+        get
+        {
+            if (!_rectTransform)
+                _rectTransform = GetComponent<RectTransform>();
+
+            return _rectTransform;
+        }
+    }
 }

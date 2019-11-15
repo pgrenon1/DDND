@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3518352bdf72c054ca1ca5c3cc218054, type: 3}
+  m_Script: {fileID: 11500000, guid: 1d365cf8743ba0a4da02c027c8744166, type: 3}
   m_Name: Item_Dagger
   m_EditorClassIdentifier: 
   serializationData:
@@ -34,5 +34,5 @@ MonoBehaviour:
       Entry: 8
       Data: 
   objectName: Dagger
-  description: It's a slighlty big knife.
+  description: A small knife
   sprite: {fileID: 21300000, guid: 486d95e08b2149f468963864f49be25e, type: 3}

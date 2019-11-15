@@ -50,6 +50,15 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         SpawnEnemy(enemyPrefabs[0]);
     }
 
+    private void Start()
+    {
+        foreach (var player in players)
+        {
+            player.Init();
+            player.PickLoadout();
+        }
+    }
+
     private void SpawnEnemy(Enemy enemyPrefab)
     {
         var enemy = Instantiate(enemyPrefab, enemyParent.position, Quaternion.identity, enemyParent);
@@ -73,9 +82,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     {
         _musicSource.Play();
 
-        foreach (var playerController in players)
+        foreach (var player in players)
         {
-            playerController.StartDancing();
+            player.Conductor.Play();
+            player.StartDancing();
         }
 
         SongIsPlaying = true;
@@ -114,15 +124,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            foreach (var player in players)
-            {
-                player.PickLoadout();
-            }
-            //FirstPlayer.StartTurn();
-        }
-
         if (players.TrueForAll(player => player.IsReady))
         {
             StartSong();
