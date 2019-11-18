@@ -6,8 +6,10 @@ public class Enemy : Targetable
 {
     public List<SongData> songDatas = new List<SongData>();
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
+
         GameManager.Instance.SetupSong(songDatas.RandomElement().song);
     }
 }

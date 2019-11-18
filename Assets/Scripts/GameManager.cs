@@ -124,7 +124,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     private void Update()
     {
-        if (players.TrueForAll(player => player.IsReady))
+        if (!SongIsPlaying && players.TrueForAll(player => player.IsReady))
         {
             StartSong();
         }
@@ -132,6 +132,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     public void SetupSong(Song songToPlay)
     {
-        _musicSource.clip = songToPlay.audioClip;
+        CurrentSong = songToPlay;
     }
 }

@@ -265,8 +265,8 @@ public class Conductor : MonoBehaviour
 
     private void ApplyNoteEffects(float noteScore)
     {
-        PlayerMenu.loadoutSlotA.PickedLoadoutObject.Trigger(noteScore, Player.CurrentTarget);
-        PlayerMenu.loadoutSlotB.PickedLoadoutObject.Trigger(noteScore, Player.CurrentTarget);
+        PlayerMenu.loadoutSlotA.PickedLoadoutObject.Trigger(noteScore);
+        PlayerMenu.loadoutSlotB.PickedLoadoutObject.Trigger(noteScore);
     }
 
     private float GetNoteValue(Timing timing)

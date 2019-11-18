@@ -9,17 +9,13 @@ using UnityEngine.UI;
 
 public class Player : Targetable
 {
-    [Header("Loadout")]
-    [AssetSelector]
-    public List<ItemData> startingItemDatas = new List<ItemData>();
-    [AssetSelector]
-    public List<SkillData> startingSkillDatas = new List<SkillData>();
+    public int playerLevel;
+    [Header("PlayerClass")]
+    public PlayerClass playerClass;
 
     [Header("Energy")]
     public TextMeshProUGUI energyText;
     public Image energyFill;
-    public int energyMax = 50;
-    public float energyGainPerSecond = 1f;
 
     public bool IsDancing { get; set; }
     public Conductor Conductor { get; private set; }
@@ -28,7 +24,13 @@ public class Player : Targetable
     public List<Skill> Skills { get; set; } = new List<Skill>();
     public bool IsReady { get; set; }
     public float Energy { get; set; }
-    public Enemy CurrentTarget { get; set; }
+    public float EnergyMax
+    {
+        get
+        {
+            return playerClass.maxEnergy.GetValue(playerLevel);
+        }
+    }
 
     public void Init()
     {
@@ -40,21 +42,21 @@ public class Player : Targetable
 
         InitItems();
         InitSkills();
-
-        Energy = energyMax;
     }
 
     private void InitItems()
     {
-        foreach (var itemData in startingItemDatas)
+        foreach (var itemData in playerClass.startingItemDatas)
         {
-            Items.Add(new Item(itemData));
+            var newItem = new Item(itemData);
+            newItem.Owner = this;
+            Items.Add(newItem);
         }
     }
 
     private void InitSkills()
     {
-        foreach (var skillData in startingSkillDatas)
+        foreach (var skillData in playerClass.startingSkillDatas)
         {
             Skills.Add(new Skill(skillData));
         }
@@ -69,12 +71,8 @@ public class Player : Targetable
 
     private void UpdateEnergy()
     {
-        var energyGain = Mathf.Min(energyGainPerSecond * Time.deltaTime, energyMax - Energy);
-
-        Energy += energyGain;
-
-        energyText.text = Mathf.CeilToInt(Energy).ToString();
-        energyFill.fillAmount = Energy / energyMax;
+        energyText.text = Mathf.FloorToInt(Energy).ToString();
+        energyFill.fillAmount = Energy / EnergyMax;
     }
 
     private void UpdateInputs()

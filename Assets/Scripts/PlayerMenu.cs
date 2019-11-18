@@ -19,6 +19,7 @@ public class PlayerMenu : BaseBehaviour
     public LoadoutSlot FocusedLoadoutSlot { get; set; }
     public MenuOption CurrentMenuOption { get; private set; }
     public Player Player { get; set; }
+    public Targetable CurrentTarget { get; set; }
 
     private MenuOption _selectedMenuOption;
     public MenuOption SelectedMenuOption
@@ -100,9 +101,9 @@ public class PlayerMenu : BaseBehaviour
     {
         if (!Player.IsReady)
         {
-            //Player.Loadout.SlotA = loadoutSlotA.LoadoutObjects[loadoutSlotA.PickedMenuOption];
-            //Player.Loadout.SlotB = loadoutSlotB.LoadoutObjects[loadoutSlotB.PickedMenuOption];
             Player.IsReady = true;
+
+            CurrentTarget = FindObjectOfType<Enemy>();
         }
     }
 

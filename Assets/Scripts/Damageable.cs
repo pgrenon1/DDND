@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -27,6 +28,7 @@ public class Damageable : MonoBehaviour
     public bool TryDamage(DamageData damageData)
     {
         var hasDealtDamage = false;
+
         // scale damage for resistances/vulnarabilities
 
         foreach (var typedDamage in damageData.typedDamages)
@@ -38,5 +40,12 @@ public class Damageable : MonoBehaviour
         }
 
         return hasDealtDamage;
+    }
+
+    public bool TryHeal(float healAmount)
+    {
+        var amountHealed = Mathf.Min(healAmount, maxHealth - CurrentHealth);
+
+        return amountHealed > 0f;
     }
 }

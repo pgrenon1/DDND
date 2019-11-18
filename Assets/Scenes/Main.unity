@@ -2899,7 +2899,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1431285552}
   m_Layer: 0
-  m_Name: EnemyParent
+  m_Name: EnemyStage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4684,15 +4684,10 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  startingItemDatas:
-  - {fileID: 11400000, guid: 2e73ba24ca2fdcc4d803b4d9325b2bec, type: 2}
-  - {fileID: 11400000, guid: 98a2d792e6e1e154a8c21e2120f3bebf, type: 2}
-  - {fileID: 11400000, guid: b4dd5bcabf320d74bb9f19b9635f8e6f, type: 2}
-  startingSkillDatas: []
+  playerLevel: 0
+  playerClass: {fileID: 0}
   energyText: {fileID: 2061529132}
   energyFill: {fileID: 823156406}
-  energyMax: 50
-  energyGainPerSecond: 1
 --- !u!225 &5113888557058353636
 CanvasGroup:
   m_ObjectHideFlags: 0

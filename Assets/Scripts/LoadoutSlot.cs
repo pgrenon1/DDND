@@ -142,12 +142,10 @@ public class LoadoutSlot : MonoBehaviour
             menuOptions.Add(pair.Key);
         }
 
-        var overshoot = 0;
         var viewportHeight = _scrollRect.viewport.rect.height;
         var difference = viewportHeight - menuOptions[0].RectTransform.rect.height;
         var halfDifference = difference / 2;
         var ratio = halfDifference / viewportHeight;
-        Debug.Log(ratio);
 
         var index = menuOptions.IndexOf(PickedMenuOption);
         float target = (1f - (index / (LoadoutObjects.Count - 1f))).Remap(0f, 1f, 0f - ratio, 1f + ratio);
