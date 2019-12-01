@@ -4,15 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LoadoutObject
+public class LoadoutSlotElement : SlotElement
 {
-    public string objectName;
-    public string description;
-    public Sprite sprite;
-
     public Player Owner { get; set; }
 
-    public virtual void Trigger(float noteScore)
+    public virtual void ScoreNote(float noteScore)
     {
 
     }

@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d365cf8743ba0a4da02c027c8744166, type: 3}
-  m_Name: Item_BoardingAxe
+  m_Script: {fileID: 11500000, guid: be6c82cf7933ec64598e04e895fa3fde, type: 3}
+  m_Name: Skill_Fireball
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -21,7 +21,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: itemEffects
+    - Name: effects
       Entry: 7
       Data: 0|System.Collections.Generic.List`1[[LoadoutEffect, Assembly-CSharp]],
         mscorlib
@@ -45,7 +45,7 @@ MonoBehaviour:
       Data: 4|TypedDamage, Assembly-CSharp
     - Name: damageType
       Entry: 3
-      Data: 0
+      Data: 1
     - Name: scalableValue
       Entry: 7
       Data: 5|ScalableFloat, Assembly-CSharp
@@ -54,13 +54,13 @@ MonoBehaviour:
       Data: 1
     - Name: minimumValue
       Entry: 4
-      Data: 5
+      Data: 15
     - Name: referenceValue
       Entry: 4
-      Data: 5
+      Data: 25
     - Name: gain
       Entry: 4
-      Data: 5
+      Data: 0
     - Name: 
       Entry: 8
       Data: 
@@ -85,6 +85,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  objectName: Boarding Axe
-  description: It chops wewd
-  sprite: {fileID: 21300000, guid: 8f7fbc57f9e4fa44a888ce381bbd5326, type: 3}
+  objectName: Fireball
+  description: Take a guess
+  sprite: {fileID: 21300000, guid: 70c5add8d47ce9f40a5a814c19cb22a5, type: 3}
+  noteCount: 10

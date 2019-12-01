@@ -25,26 +25,25 @@ public class Damageable : MonoBehaviour
         healthBarFill.fillAmount = CurrentHealth / maxHealth;
     }
 
-    public bool TryDamage(DamageData damageData)
+    public bool TryDamage(Damage damage)
     {
-        var hasDealtDamage = false;
+        var healthBefore = CurrentHealth;
 
-        // scale damage for resistances/vulnarabilities
+        // scale damage for resistances/vulnerabilities
 
-        foreach (var typedDamage in damageData.typedDamages)
+        foreach (var typedDamage in damage.DamageData.typedDamages)
         {
-            CurrentHealth -= typedDamage.value;
-
-            if (typedDamage.value > 0)
-                hasDealtDamage = true;
+            CurrentHealth -= typedDamage.scalableValue.GetValue(damage.ScalingFactor);
         }
 
-        return hasDealtDamage;
+        return healthBefore - CurrentHealth > 0f;
     }
 
     public bool TryHeal(float healAmount)
     {
         var amountHealed = Mathf.Min(healAmount, maxHealth - CurrentHealth);
+
+        CurrentHealth += amountHealed;
 
         return amountHealed > 0f;
     }

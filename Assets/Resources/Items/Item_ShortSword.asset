@@ -23,42 +23,16 @@ MonoBehaviour:
     SerializationNodes:
     - Name: itemEffects
       Entry: 7
-      Data: 0|System.Collections.Generic.List`1[[ItemEffect, Assembly-CSharp]], mscorlib
+      Data: 0|System.Collections.Generic.List`1[[LoadoutEffect, Assembly-CSharp]],
+        mscorlib
     - Name: 
       Entry: 12
       Data: 1
     - Name: 
       Entry: 7
-      Data: 1|DamageItemEffect, Assembly-CSharp
+      Data: 1|DamageLoadoutEffect, Assembly-CSharp
     - Name: damageData
-      Entry: 7
-      Data: 2|DamageData, Assembly-CSharp
-    - Name: typedDamages
-      Entry: 7
-      Data: 3|System.Collections.Generic.List`1[[TypedDamage, Assembly-CSharp]], mscorlib
-    - Name: 
-      Entry: 12
-      Data: 1
-    - Name: 
-      Entry: 7
-      Data: 4|TypedDamage, Assembly-CSharp
-    - Name: damageType
-      Entry: 3
-      Data: 0
-    - Name: value
-      Entry: 4
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 8
+      Entry: 6
       Data: 
     - Name: 
       Entry: 8

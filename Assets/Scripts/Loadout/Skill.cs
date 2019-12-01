@@ -3,31 +3,52 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Skill : LoadoutObject
+public class Skill : LoadoutSlotElement
 {
     public int noteCount = 10;
-    public List<SkillEffect> skillEffects = new List<SkillEffect>();
+    public List<LoadoutEffect> effects = new List<LoadoutEffect>();
 
-    public bool IsActive { get; set; }
+    public bool IsActive { get; private set; }
+    public int NotesLeft { get; private set; }
+    public float Score { get; private set; }
 
     public Skill(SkillData skillData)
     {
         objectName = skillData.name;
         description = skillData.description;
         sprite = skillData.sprite;
-        foreach (var skillEffect in skillData.skillEffects)
+        foreach (var effect in skillData.effects)
         {
-            skillEffects.Add(skillEffect);
+            effects.Add(effect);
+            effect.LoadoutObject = this;
         }
     }
 
-    public override void Trigger(float noteScore)
+    public void Activate()
+    {
+        if (IsActive)
+            return;
+
+        IsActive = true;
+
+        NotesLeft = noteCount;
+    }
+
+    public override void ScoreNote(float noteScore)
     {
         if (!IsActive)
             return;
 
-        base.Trigger(noteScore);
+        base.ScoreNote(noteScore);
 
-        Debug.Log("Applying Skill");
+        Score += noteScore;
+    }
+
+    public void Resolve()
+    {
+        foreach (var effect in effects)
+        {
+            effect.Apply(Score);
+        }
     }
 }

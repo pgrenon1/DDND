@@ -3,8 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum SlotType
+{
+    Item,
+    Skill,
+    Both
+}
+
+[ShowOdinSerializedPropertiesInInspector, CreateAssetMenu(fileName = "PlayerClass_", menuName = "PlayerClass")]
 public class PlayerClass : OdinSerializedScriptableObject
 {
+    public string className;
     public ScalableFloat maxHealth;
     public ScalableFloat maxEnergy;
     public ScalableFloat energyGainPerNote;
@@ -12,9 +21,6 @@ public class PlayerClass : OdinSerializedScriptableObject
     public List<ItemData> startingItemDatas = new List<ItemData>();
     [AssetSelector]
     public List<SkillData> startingSkillDatas = new List<SkillData>();
-    [Range(1, 2)]
-    public int numberOfSlots;
-    public bool canHaveTwoItems;
-    public bool canHaveTwoSkills;
+    public List<SlotType> slots = new List<SlotType>();
     public bool canChangeLoadoutInSong;
 }

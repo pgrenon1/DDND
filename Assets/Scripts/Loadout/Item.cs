@@ -5,10 +5,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Item : LoadoutObject
+public class Item : LoadoutSlotElement
 {
     [System.NonSerialized, OdinSerialize]
-    public List<ItemEffect> itemEffects = new List<ItemEffect>();
+    public List<LoadoutEffect> itemEffects = new List<LoadoutEffect>();
 
     public Item(ItemData itemData)
     {
@@ -18,19 +18,20 @@ public class Item : LoadoutObject
         foreach (var itemEffect in itemData.itemEffects)
         {
             itemEffects.Add(itemEffect);
-            itemEffect.Item = this;
+            itemEffect.LoadoutObject = this;
         }
     }
 
-    public override void Trigger(float noteScore)
+    public override void ScoreNote(float noteScore)
     {
+        // Apply Item Effects
         foreach (var itemEffect in itemEffects)
         {
             itemEffect.Apply(noteScore);
         }
     }
 
-    public List<T> GetActiveItemEffectsOfType<T>() where T : ItemEffect
+    public List<T> GetActiveItemEffectsOfType<T>() where T : LoadoutEffect
     {
         var itemEffectsOfType = new List<T>();
 

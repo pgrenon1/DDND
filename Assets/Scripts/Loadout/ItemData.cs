@@ -8,5 +8,5 @@ using UnityEngine;
 public class ItemData : LoadoutObjectData
 {
     [System.NonSerialized, OdinSerialize]
-    public List<ItemEffect> itemEffects = new List<ItemEffect>();
+    public List<LoadoutEffect> itemEffects = new List<LoadoutEffect>();
 }

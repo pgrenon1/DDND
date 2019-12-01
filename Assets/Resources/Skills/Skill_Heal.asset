@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d365cf8743ba0a4da02c027c8744166, type: 3}
-  m_Name: Item_Dagger
+  m_Script: {fileID: 11500000, guid: be6c82cf7933ec64598e04e895fa3fde, type: 3}
+  m_Name: Skill_Heal
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -21,7 +21,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: itemEffects
+    - Name: effects
       Entry: 7
       Data: 0|System.Collections.Generic.List`1[[LoadoutEffect, Assembly-CSharp]],
         mscorlib
@@ -30,10 +30,10 @@ MonoBehaviour:
       Data: 1
     - Name: 
       Entry: 7
-      Data: 1|DamageLoadoutEffect, Assembly-CSharp
-    - Name: damageData
-      Entry: 6
-      Data: 
+      Data: 1|HealLoadoutEffect, Assembly-CSharp
+    - Name: healAmount
+      Entry: 4
+      Data: 10
     - Name: 
       Entry: 8
       Data: 
@@ -43,6 +43,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  objectName: Dagger
-  description: A small knife
-  sprite: {fileID: 21300000, guid: 486d95e08b2149f468963864f49be25e, type: 3}
+  objectName: Heal
+  description: Heals
+  sprite: {fileID: 21300000, guid: 8b420c9408c70d34ca51f714964f3b08, type: 3}
+  noteCount: 10

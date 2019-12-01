@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class Loadout
 {
-    public LoadoutObject SlotA { get; set; }
-    public LoadoutObject SlotB { get; set; }
+    public LoadoutSlotElement SlotA { get; set; }
+    public LoadoutSlotElement SlotB { get; set; }
 }

@@ -10,6 +10,7 @@ using UnityEngine.UI;
 public class Player : Targetable
 {
     public int playerLevel;
+
     [Header("PlayerClass")]
     public PlayerClass playerClass;
 
@@ -22,6 +23,7 @@ public class Player : Targetable
     public PlayerMenu PlayerMenu { get; private set; }
     public List<Item> Items { get; set; } = new List<Item>();
     public List<Skill> Skills { get; set; } = new List<Skill>();
+    public Targetable CurrentTarget { get; set; }
     public bool IsReady { get; set; }
     public float Energy { get; set; }
     public float EnergyMax
@@ -40,8 +42,18 @@ public class Player : Targetable
         PlayerMenu = GetComponentInChildren<PlayerMenu>();
         PlayerMenu.Player = this;
 
+        //TEMP
+        InitPlayer(playerClass);
+    }
+
+    public void InitPlayer(PlayerClass playerClass)
+    {
+        //Temp
+        this.playerClass = playerClass;
         InitItems();
         InitSkills();
+
+        Energy = EnergyMax;
     }
 
     private void InitItems()
@@ -126,23 +138,12 @@ public class Player : Targetable
         Conductor.DirectionFeedback(direction);
     }
 
-    //public void StartTurn()
-    //{
-    //    if (GameManager.Instance.FirstPlayer == this)
-    //    {
-    //        PlayerMenu.InitInventoryMenu();
-    //    }
-    //}
-
-    //public void EndTurn()
-    //{
-    //    GameManager.Instance.NextTurn();
-    //}
-
     public void PickLoadout()
     {
+        PlayerMenu.InitLoadoutSlots(playerClass);
+
         PlayerMenu.RefreshLoadout();
 
-        PlayerMenu.Select(PlayerMenu.loadoutSlotA.LoadoutObjects.First().Key.GetComponent<Selectable>());
+        PlayerMenu.Select(PlayerMenu.LoadoutSlots.First().Key.GetComponent<Selectable>());
     }
 }

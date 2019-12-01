@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07f034fb4a3bdb84da4c4400536c016b, type: 3}
+  m_Name: PlayerClass_Fighter
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
+  className: FIghter
+  maxHealth:
+    scalingType: 0
+    minimumValue: 100
+    referenceValue: 0
+    gain: 20
+  maxEnergy:
+    scalingType: 0
+    minimumValue: 50
+    referenceValue: 0
+    gain: 10
+  energyGainPerNote:
+    scalingType: 0
+    minimumValue: 0
+    referenceValue: 0
+    gain: 0
+  startingItemDatas:
+  - {fileID: 11400000, guid: b4dd5bcabf320d74bb9f19b9635f8e6f, type: 2}
+  - {fileID: 11400000, guid: 2e73ba24ca2fdcc4d803b4d9325b2bec, type: 2}
+  - {fileID: 11400000, guid: 98a2d792e6e1e154a8c21e2120f3bebf, type: 2}
+  startingSkillDatas:
+  - {fileID: 11400000, guid: 3c6406b42ecdcc1439476b54855a1648, type: 2}
+  - {fileID: 11400000, guid: 0869c530bd085ca4b8274daaa4fdb992, type: 2}
+  slots: 0000000001000000
+  canChangeLoadoutInSong: 0

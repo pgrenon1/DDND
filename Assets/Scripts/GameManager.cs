@@ -5,11 +5,28 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum GameState
+{
+    MainMenu,
+    Registeration,
+    Map,
+    Encounter
+}
+
+public enum EncounterState
+{
+    Loadout,
+    Combat,
+    Review
+}
+
 [ShowOdinSerializedPropertiesInInspector]
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
     public AudioSource musicSourcePrefab;
     public List<Player> players = new List<Player>();
+    [AssetList(Path = "Resources/PlayerClasses")]
+    public List<PlayerClass> playerClasses = new List<PlayerClass>();
     public List<Enemy> enemyPrefabs = new List<Enemy>();
     public Transform enemyParent;
     public Transform playerStage;
@@ -18,7 +35,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     public bool SongIsPlaying { get; set; }
     public Enemy CurrentEnemy { get; set; }
 
-    [System.NonSerialized, OdinSerialize]
+    [System.NonSerialized, OdinSerialize, ReadOnly]
     public Song currentSong;
     public Song CurrentSong
     {
@@ -67,17 +84,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         _currentEnemy = enemy;
     }
 
-    //private void StartPlaying()
-    //{
-    //    _activePlayerIndex = _firstIndex;
-    //    FirstPlayer = players[_firstIndex];
-    //}
-
-    //public void ChooseSong(Song songData)
-    //{
-    //    CurrentSong = songData;
-    //}
-
     public void StartSong()
     {
         _musicSource.Play();
@@ -90,37 +96,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
         SongIsPlaying = true;
     }
-
-    //public void NextTurn()
-    //{
-    //    _activePlayerIndex++;
-
-    //    if (_activePlayerIndex > playerControllers.Count - 1)
-    //    {
-    //        _firstIndex++;
-
-    //        if (_firstIndex >= playerControllers.Count - 1)
-    //        {
-    //            _firstIndex = 0;
-    //        }
-
-    //        _activePlayerIndex = _firstIndex;
-
-    //        FirstPlayer = playerControllers[_firstIndex];
-    //    }
-
-    //    playerControllers[_activePlayerIndex].StartTurn();
-    //}
-
-    //public void StartActionMenus()
-    //{
-    //    Inventory.Instance.Hide();
-
-    //    foreach (var playerController in players)
-    //    {
-    //        playerController.PlayerMenu.InitActionMenu();
-    //    }
-    //}
 
     private void Update()
     {

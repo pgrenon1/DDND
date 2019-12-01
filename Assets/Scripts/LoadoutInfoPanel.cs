@@ -4,26 +4,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InfoPanel : MonoBehaviour
+public class InfoPanel : UIBaseBehaviour
 {
     public Image image;
     public TextMeshProUGUI title;
     public TextMeshProUGUI category;
     public TextMeshProUGUI description;
 
-    public PlayerMenu _playerMenu;
-    public PlayerMenu PlayerMenu
-    {
-        get
-        {
-            if (_playerMenu == null)
-                _playerMenu = GetComponentInParent<PlayerMenu>();
-
-            return _playerMenu;
-        }
-    }
-
-    public void UpdateContent(LoadoutObject loadoutObject)
+    public void RefreshContent(SlotElement loadoutObject)
     {
         image.sprite = loadoutObject.sprite;
         title.text = loadoutObject.objectName;

@@ -19,6 +19,16 @@ public class ScalableFloat
     [ShowIf("scalingType", ScalingType.Gain)]
     public float gain;
 
+    public ScalableFloat() { }
+
+    public ScalableFloat(ScalableFloat original)
+    {
+        scalingType = original.scalingType;
+        minimumValue = original.minimumValue;
+        referenceValue = original.referenceValue;
+        gain = original.gain;
+    }
+
     public float GetValue(float scalingValue)
     {
         if (scalingType == ScalingType.Gain)

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1d365cf8743ba0a4da02c027c8744166, type: 3}
-  m_Name: Item_Dagger
+  m_Name: Item_Staff
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -30,10 +30,10 @@ MonoBehaviour:
       Data: 1
     - Name: 
       Entry: 7
-      Data: 1|DamageLoadoutEffect, Assembly-CSharp
-    - Name: damageData
-      Entry: 6
-      Data: 
+      Data: 1|EnergyGainLoadoutEffect, Assembly-CSharp
+    - Name: energyGainPerNote
+      Entry: 4
+      Data: 1
     - Name: 
       Entry: 8
       Data: 
@@ -43,6 +43,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  objectName: Dagger
-  description: A small knife
-  sprite: {fileID: 21300000, guid: 486d95e08b2149f468963864f49be25e, type: 3}
+  objectName: Boarding Axr
+  description: '''Thonk'''
+  sprite: {fileID: 21300000, guid: f6178ae36e7dd0b40958d9331de5a403, type: 3}

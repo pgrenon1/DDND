@@ -1,0 +1,13 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class PlayerClassSlotElement : SlotElement
+{
+    public PlayerClass PlayerClass { get; set; }
+
+    public PlayerClassSlotElement(PlayerClass playerClass)
+    {
+        PlayerClass = playerClass;
+    }
+}

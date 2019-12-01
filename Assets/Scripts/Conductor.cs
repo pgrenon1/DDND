@@ -265,8 +265,10 @@ public class Conductor : MonoBehaviour
 
     private void ApplyNoteEffects(float noteScore)
     {
-        PlayerMenu.loadoutSlotA.PickedLoadoutObject.Trigger(noteScore);
-        PlayerMenu.loadoutSlotB.PickedLoadoutObject.Trigger(noteScore);
+        foreach (var loadoutSlot in PlayerMenu.LoadoutSlots)
+        {
+            loadoutSlot.Key.PickedSlotElement.ScoreNote(noteScore);
+        }
     }
 
     private float GetNoteValue(Timing timing)

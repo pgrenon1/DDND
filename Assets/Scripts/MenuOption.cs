@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MenuOption : BaseBehaviour
+public class MenuOption : UIBaseBehaviour
 {
     public TextMeshProUGUI optionText;
     public Image mainImage;

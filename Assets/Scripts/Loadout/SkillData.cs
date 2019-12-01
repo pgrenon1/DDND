@@ -1,4 +1,5 @@
 ﻿using Sirenix.OdinInspector;
+using Sirenix.Serialization;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,5 +8,6 @@ using UnityEngine;
 public class SkillData : LoadoutObjectData
 {
     public int noteCount = 10;
-    public List<SkillEffect> skillEffects = new List<SkillEffect>();
+    [System.NonSerialized, OdinSerialize]
+    public List<LoadoutEffect> effects = new List<LoadoutEffect>();
 }

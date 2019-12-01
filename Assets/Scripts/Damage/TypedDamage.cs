@@ -17,13 +17,19 @@ public class TypedDamage
     [HorizontalGroup("Damage")]
     public DamageType damageType;
     [HorizontalGroup("Damage")]
-    public float value;
+    public ScalableFloat scalableValue;
 
     public TypedDamage() { }
 
-    public TypedDamage(DamageType damageType, float value)
+    public TypedDamage(TypedDamage typedDamage)
+    {
+        damageType = typedDamage.damageType;
+        scalableValue = new ScalableFloat(typedDamage.scalableValue);
+    }
+
+    public TypedDamage(DamageType damageType, ScalableFloat scalableValue)
     {
         this.damageType = damageType;
-        this.value = value;
+        this.scalableValue = scalableValue;
     }
 }
