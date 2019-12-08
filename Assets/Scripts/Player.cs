@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using DG.Tweening;
+using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,15 +10,24 @@ using UnityEngine.UI;
 
 public class Player : Targetable
 {
-    public int playerLevel;
+    public Image leftArrow;
+    public Image upArrow;
+    public Image downArrow;
+    public Image rightArrow;
+    public RegistrationPanel registrationPanel;
 
-    [Header("PlayerClass")]
-    public PlayerClass playerClass;
+    [Space]
+    public int playerLevel;
 
     [Header("Energy")]
     public TextMeshProUGUI energyText;
     public Image energyFill;
 
+    public readonly PlayerStateLoadout playerStateLoadout;
+    public readonly PlayerStateRegistration playerStateRegistration;
+
+    public PlayerClass PlayerClass { get; set; }
+    public IPlayerState State { get; set; }
     public bool IsDancing { get; set; }
     public Conductor Conductor { get; private set; }
     public PlayerMenu PlayerMenu { get; private set; }
@@ -26,39 +36,41 @@ public class Player : Targetable
     public Targetable CurrentTarget { get; set; }
     public bool IsReady { get; set; }
     public float Energy { get; set; }
+    public PlayerActions Actions { get; set; }
+    public PlayerParent PlayerParent { get; set; }
+
     public float EnergyMax
     {
         get
         {
-            return playerClass.maxEnergy.GetValue(playerLevel);
+            return PlayerClass.maxEnergy.GetValue(playerLevel);
         }
     }
 
-    public void Init()
+
+    public void Awake()
     {
         Conductor = GetComponentInChildren<Conductor>();
         Conductor.Player = this;
 
         PlayerMenu = GetComponentInChildren<PlayerMenu>();
         PlayerMenu.Player = this;
-
-        //TEMP
-        InitPlayer(playerClass);
     }
 
     public void InitPlayer(PlayerClass playerClass)
     {
-        //Temp
-        this.playerClass = playerClass;
+        PlayerClass = playerClass;
+
         InitItems();
         InitSkills();
+        PlayerMenu.InitLoadoutSlots();
 
         Energy = EnergyMax;
     }
 
     private void InitItems()
     {
-        foreach (var itemData in playerClass.startingItemDatas)
+        foreach (var itemData in PlayerClass.startingItemDatas)
         {
             var newItem = new Item(itemData);
             newItem.Owner = this;
@@ -68,7 +80,7 @@ public class Player : Targetable
 
     private void InitSkills()
     {
-        foreach (var skillData in playerClass.startingSkillDatas)
+        foreach (var skillData in PlayerClass.startingSkillDatas)
         {
             Skills.Add(new Skill(skillData));
         }
@@ -76,43 +88,13 @@ public class Player : Targetable
 
     private void Update()
     {
-        UpdateInputs();
-
-        UpdateEnergy();
+        State.Update(this);
     }
 
-    private void UpdateEnergy()
+    public void UpdateEnergy()
     {
         energyText.text = Mathf.FloorToInt(Energy).ToString();
         energyFill.fillAmount = Energy / EnergyMax;
-    }
-
-    private void UpdateInputs()
-    {
-        if (Input.GetKeyDown(KeyCode.Q) || Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            DirectionPressed(Direction.Left);
-        }
-
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            DirectionPressed(Direction.Up);
-        }
-
-        if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            DirectionPressed(Direction.Down);
-        }
-
-        if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            DirectionPressed(Direction.Right);
-        }
-
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            PlayerMenu.Confirm();
-        }
     }
 
     public void StartDancing()
@@ -124,26 +106,70 @@ public class Player : Targetable
         IsDancing = true;
     }
 
-    private void DirectionPressed(Direction direction)
-    {
-        if (IsDancing)
-        {
-            Conductor.JudgeHit(direction);
-        }
-        else
-        {
-            PlayerMenu.MoveSelection(direction);
-        }
+    //private void DirectionPressed(Direction direction)
+    //{
+    //if (IsDancing)
+    //{
+    //    Conductor.JudgeHit(direction);
+    //}
+    //else
+    //{
+    //    PlayerMenu.MoveSelection(direction);
+    //}
 
-        Conductor.DirectionFeedback(direction);
+    //DirectionFeedback(direction);
+    //}
+
+    public void DirectionFeedback(Direction direction)
+    {
+        var arrow = GetArrowFromDirection(direction);
+        arrow.transform.DOPunchScale(Vector3.one / 3f, 0.15f).From();
+    }
+
+    private Image GetArrowFromDirection(Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.Left:
+                return leftArrow;
+            case Direction.Up:
+                return upArrow;
+            case Direction.Down:
+                return downArrow;
+            case Direction.Right:
+                return rightArrow;
+            default:
+                Debug.LogWarning("Invalid Direction");
+                return null;
+        }
     }
 
     public void PickLoadout()
     {
-        PlayerMenu.InitLoadoutSlots(playerClass);
+        //PlayerMenu.InitLoadoutSlots(PlayerClass);
 
-        PlayerMenu.RefreshLoadout();
+        //PlayerMenu.RefreshLoadout();
 
-        PlayerMenu.Select(PlayerMenu.LoadoutSlots.First().Key.GetComponent<Selectable>());
+        //PlayerMenu.Select(PlayerMenu.LoadoutSlots.First().Key.GetComponent<Selectable>());
+    }
+
+    public void ActivateItemOrSkill(CornerButton button)
+    {
+        var item = GetLoadoutSlotElement(button) as Item;
+        if (item != null)
+        {
+            //"Activate" item
+        }
+
+        var skill = GetLoadoutSlotElement(button) as Skill;
+        if (skill != null)
+        {
+            skill.Activate();
+        }
+    }
+
+    private LoadoutSlotElement GetLoadoutSlotElement(CornerButton button)
+    {
+
     }
 }

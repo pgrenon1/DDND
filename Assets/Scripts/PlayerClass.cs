@@ -14,6 +14,7 @@ public enum SlotType
 public class PlayerClass : OdinSerializedScriptableObject
 {
     public string className;
+    public Sprite classIcon;
     public ScalableFloat maxHealth;
     public ScalableFloat maxEnergy;
     public ScalableFloat energyGainPerNote;

@@ -5,35 +5,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GameState
-{
-    MainMenu,
-    Registeration,
-    Map,
-    Encounter
-}
+//public enum GameState
+//{
+//    MainMenu,
+//    Registeration,
+//    Map,
+//    Encounter
+//}
 
-public enum EncounterState
-{
-    Loadout,
-    Combat,
-    Review
-}
+//public enum EncounterState
+//{
+//    Loadout,
+//    Combat,
+//    Review
+//}
 
 [ShowOdinSerializedPropertiesInInspector]
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
     public AudioSource musicSourcePrefab;
-    public List<Player> players = new List<Player>();
     [AssetList(Path = "Resources/PlayerClasses")]
     public List<PlayerClass> playerClasses = new List<PlayerClass>();
     public List<Enemy> enemyPrefabs = new List<Enemy>();
     public Transform enemyParent;
     public Transform playerStage;
 
-    public Player ActivePlayer { get { return players[_activePlayerIndex]; } }
     public bool SongIsPlaying { get; set; }
     public Enemy CurrentEnemy { get; set; }
+    public IGameState GameState { get; set; }
+    public List<Player> Players { get; set; } = new List<Player>();
 
     [System.NonSerialized, OdinSerialize, ReadOnly]
     public Song currentSong;
@@ -51,7 +51,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
     }
 
-    private int _activePlayerIndex = 0;
     private AudioSource _musicSource;
     private SongLoader _songLoader;
     private Enemy _currentEnemy;
@@ -69,10 +68,12 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     private void Start()
     {
-        foreach (var player in players)
+
+
+        foreach (var player in Players)
         {
-            player.Init();
-            player.PickLoadout();
+            //player.Init();
+            //player.PickLoadout();
         }
     }
 
@@ -88,7 +89,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     {
         _musicSource.Play();
 
-        foreach (var player in players)
+        foreach (var player in Players)
         {
             player.Conductor.Play();
             player.StartDancing();
@@ -99,10 +100,10 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     private void Update()
     {
-        if (!SongIsPlaying && players.TrueForAll(player => player.IsReady))
-        {
-            StartSong();
-        }
+        //if (!SongIsPlaying && players.TrueForAll(player => player.IsReady))
+        //{
+        //    StartSong();
+        //}
     }
 
     public void SetupSong(Song songToPlay)

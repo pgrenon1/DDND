@@ -4,14 +4,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerClassInfoPanel : UIBaseBehaviour
+public class PlayerClassInfoPanel : InfoPanel
 {
-    public Image image;
-    public TextMeshProUGUI title;
     public TextMeshProUGUI description;
 
-    public void RefreshContent(PlayerClass playerClass)
+    public override void RefreshContent(SlotElement slotElement)
     {
-
+        var playerClassSlotElement = slotElement as PlayerClassSlotElement;
+        if (playerClassSlotElement != null)
+            title.text = playerClassSlotElement.PlayerClass.className;
     }
 }

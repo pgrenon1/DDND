@@ -6,12 +6,11 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Slot<T> : UIBaseBehaviour where T : SlotElement
+public class Slot : UIBaseBehaviour
 {
     public Image arrowUp;
     public Image arrowDown;
     public Transform contentParent;
-    public SlotType slotType;
 
     private PlayerMenu _playerMenu;
     public PlayerMenu PlayerMenu
@@ -25,18 +24,35 @@ public class Slot<T> : UIBaseBehaviour where T : SlotElement
         }
     }
 
-    public Dictionary<MenuOption, T> SlotElements { get; set; } = new Dictionary<MenuOption, T>();
-    public MenuOption PickedMenuOption { get; set; }
+    public Dictionary<MenuOption, SlotElement> SlotElements { get; set; } = new Dictionary<MenuOption, SlotElement>();
 
-    public T PickedSlotElement
+    public MenuOption _selectedMenuOption;
+    public MenuOption SelectedMenuOption
     {
         get
         {
-            if (PickedMenuOption != null)
-                return SlotElements[PickedMenuOption];
+            return _selectedMenuOption;
+        }
+
+        private set
+        {
+            _selectedMenuOption = value;
+        }
+    }
+    public SlotElement SelectedSlotElement
+    {
+        get
+        {
+            if (SelectedMenuOption != null)
+                return SlotElements[SelectedMenuOption];
             else
                 return null;
         }
+    }
+
+    public T GetPickedSlotElement<T>() where T : SlotElement
+    {
+        return SelectedSlotElement as T;
     }
 
     private ToggleGroup _toggleGroup;
@@ -60,13 +76,20 @@ public class Slot<T> : UIBaseBehaviour where T : SlotElement
         }
     }
 
+    public IEnumerable<T> GetSlotElements<T>() where T : SlotElement
+    {
+        foreach (var slotElement in SlotElements)
+            if (slotElement.Value is T)
+                yield return slotElement.Value as T;
+    }
+
     private void SetPicked(MenuOption newPicked)
     {
-        PickedMenuOption = newPicked;
+        SelectedMenuOption = newPicked;
         ScrollToSelected();
 
         if (_infoPanel != null)
-            _infoPanel.RefreshContent(PickedSlotElement);
+            _infoPanel.RefreshContent(SelectedSlotElement);
     }
 
     private void UpdateInteractable()
@@ -92,7 +115,7 @@ public class Slot<T> : UIBaseBehaviour where T : SlotElement
         arrowDown.gameObject.SetActive(showArrows && PlayerMenu.SelectedMenuOption.transform.GetSiblingIndex() < contentParent.childCount - 1);
     }
 
-    private void RemoveExtraMenuOptions(List<T> loadoutObjects)
+    private void RemoveExtraMenuOptions(List<SlotElement> loadoutObjects)
     {
         var menuOptionsToRemove = new List<MenuOption>();
 
@@ -111,7 +134,7 @@ public class Slot<T> : UIBaseBehaviour where T : SlotElement
         }
     }
 
-    private void AddMissingMenuOptions(List<T> loadoutObjects)
+    private void AddMissingMenuOptions(List<SlotElement> loadoutObjects)
     {
         foreach (var loadoutObject in loadoutObjects)
         {
@@ -126,12 +149,12 @@ public class Slot<T> : UIBaseBehaviour where T : SlotElement
         }
     }
 
-    public void Refresh(List<T> inventory)
+    public void Refresh(List<SlotElement> slotElements)
     {
-        RemoveExtraMenuOptions(inventory);
-        AddMissingMenuOptions(inventory);
+        RemoveExtraMenuOptions(slotElements);
+        AddMissingMenuOptions(slotElements);
 
-        if (PickedMenuOption == null)
+        if (SelectedMenuOption == null)
             SetPicked(SlotElements.First().Key);
     }
 
@@ -144,7 +167,7 @@ public class Slot<T> : UIBaseBehaviour where T : SlotElement
             menuOptions.Add(pair.Key);
         }
 
-        var indexOfPicked = menuOptions.IndexOf(PickedMenuOption);
+        var indexOfPicked = menuOptions.IndexOf(SelectedMenuOption);
         var loadoutObjectHeight = menuOptions[0].RectTransform.rect.height;
 
         for (int i = 0; i < menuOptions.Count; i++)
@@ -155,5 +178,29 @@ public class Slot<T> : UIBaseBehaviour where T : SlotElement
 
             menuOptions[i].RectTransform.DOLocalMove(new Vector2(0f, targetY), PlayerMenu.scrollSpeed);
         }
+    }
+
+    public void MoveSelection(Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.Down:
+                Select(SelectedMenuOption.Toggle.FindSelectableOnDown());
+                break;
+            case Direction.Up:
+                Select(SelectedMenuOption.Toggle.FindSelectableOnUp());
+                break;
+        }
+    }
+
+    public void Select(Selectable selectable)
+    {
+        if (selectable == null)
+            return;
+
+        selectable.Select();
+
+        var menuOption = selectable.GetComponent<MenuOption>();
+        SelectedMenuOption = menuOption;
     }
 }

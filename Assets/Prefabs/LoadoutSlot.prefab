@@ -533,7 +533,7 @@ GameObject:
   - component: {fileID: 61425801751628888}
   - component: {fileID: 61425801751628887}
   - component: {fileID: 2929189313101126665}
-  - component: {fileID: 2583596867547289704}
+  - component: {fileID: 8097336934665943971}
   m_Layer: 5
   m_Name: LoadoutSlot
   m_TagString: Untagged
@@ -641,7 +641,7 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &2583596867547289704
+--- !u!114 &8097336934665943971
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -650,7 +650,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 61425801751628892}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e6d22cf05dda854fa247ad214f1e190, type: 3}
+  m_Script: {fileID: 11500000, guid: 171261f4c1c6c974eb6958315b216b20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   visibilityTransitionDuration: 0

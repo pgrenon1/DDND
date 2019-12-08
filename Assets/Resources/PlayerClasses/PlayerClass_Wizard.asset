@@ -22,6 +22,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   className: Wizard
+  classIcon: {fileID: 21300000, guid: 1e177a0d7073de948a40e24e230f39e9, type: 3}
   maxHealth:
     scalingType: 0
     minimumValue: 85

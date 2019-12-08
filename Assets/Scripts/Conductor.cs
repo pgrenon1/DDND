@@ -6,14 +6,6 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum Direction
-{
-    Left = 0,
-    Right = 1,
-    Up = 2,
-    Down = 3
-}
-
 public class Conductor : MonoBehaviour
 {
     [Header("Prefabs")]
@@ -87,7 +79,7 @@ public class Conductor : MonoBehaviour
     private NoteData _nextNote;
     private bool _songIsPlaying = false;
 
-    private void Start()
+    private void Init()
     {
         PlayerMenu = Player.PlayerMenu;
     }
@@ -119,25 +111,6 @@ public class Conductor : MonoBehaviour
             CurrentDifficulty = Difficulty.Hard;
         if (Input.GetKeyDown(KeyCode.Alpha5) && CurrentSong.HasDifficulty(Difficulty.Challenge))
             CurrentDifficulty = Difficulty.Hard;
-    }
-
-    public void DirectionFeedback(Direction direction)
-    {
-        switch (direction)
-        {
-            case Direction.Left:
-                leftJudgment.DOPunchScale(Vector3.one / 3f, 0.15f).From();
-                break;
-            case Direction.Up:
-                upJudgment.DOPunchScale(Vector3.one / 3f, 0.15f).From();
-                break;
-            case Direction.Down:
-                downJudgment.DOPunchScale(Vector3.one / 3f, 0.15f).From();
-                break;
-            case Direction.Right:
-                rightJudgment.DOPunchScale(Vector3.one / 3f, 0.15f).From();
-                break;
-        }
     }
 
     private void ChangeDifficulty()
@@ -265,9 +238,10 @@ public class Conductor : MonoBehaviour
 
     private void ApplyNoteEffects(float noteScore)
     {
-        foreach (var loadoutSlot in PlayerMenu.LoadoutSlots)
+        var loadoutSlots = PlayerMenu.LoadoutSlots;
+        foreach (var kvp in loadoutSlots)
         {
-            loadoutSlot.Key.PickedSlotElement.ScoreNote(noteScore);
+            kvp.Key.GetPickedSlotElement<LoadoutSlotElement>();
         }
     }
 

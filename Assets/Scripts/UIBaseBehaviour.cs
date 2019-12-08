@@ -26,13 +26,18 @@ public class UIBaseBehaviour : BaseBehaviour
 
     private void ApplyVisibility()
     {
-        float canvasAlphaValue = IsVisible ? 1f : 0f;
-        var tween = DOTween.To(() => CanvasGroup.alpha, x => CanvasGroup.alpha = x, canvasAlphaValue, visibilityTransitionDuration);
-        tween.OnStart(() => CanvasGroup.interactable = false);
-        tween.OnComplete(() => CanvasGroup.interactable = IsVisible);
-
-        //CanvasGroup.alpha = IsVisible ? 1f : 0f;
-        //CanvasGroup.interactable = IsVisible;
+        if (visibilityTransitionDuration > 0f)
+        {
+            float canvasAlphaValue = IsVisible ? 1f : 0f;
+            var tween = DOTween.To(() => CanvasGroup.alpha, x => CanvasGroup.alpha = x, canvasAlphaValue, visibilityTransitionDuration);
+            tween.OnStart(() => CanvasGroup.interactable = false);
+            tween.OnComplete(() => CanvasGroup.interactable = IsVisible);
+        }
+        else
+        {
+            CanvasGroup.alpha = IsVisible ? 1f : 0f;
+            CanvasGroup.interactable = IsVisible;
+        }
     }
 
     public void Show()

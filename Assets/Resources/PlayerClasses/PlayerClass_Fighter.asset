@@ -21,7 +21,8 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  className: FIghter
+  className: Fighter
+  classIcon: {fileID: 21300000, guid: aadef0f175d772a44b0748ea134c41e2, type: 3}
   maxHealth:
     scalingType: 0
     minimumValue: 100

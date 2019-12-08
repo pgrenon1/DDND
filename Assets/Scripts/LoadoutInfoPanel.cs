@@ -4,36 +4,35 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InfoPanel : UIBaseBehaviour
+public class LoadoutInfoPanel : InfoPanel
 {
     public Image image;
-    public TextMeshProUGUI title;
     public TextMeshProUGUI category;
     public TextMeshProUGUI description;
 
-    public void RefreshContent(SlotElement loadoutObject)
+    public override void RefreshContent(SlotElement loadoutSlotElement)
     {
-        image.sprite = loadoutObject.sprite;
-        title.text = loadoutObject.objectName;
-        category.text = loadoutObject.GetType().ToString();
-        description.text = loadoutObject.description;
+        image.sprite = loadoutSlotElement.sprite;
+        title.text = loadoutSlotElement.objectName;
+        category.text = loadoutSlotElement.GetType().ToString();
+        description.text = loadoutSlotElement.description;
 
-        var item = loadoutObject as Item;
+        var item = loadoutSlotElement as Item;
         if (item != null)
-            UpdateItemContent(item);
+            RefreshItemContent(item);
 
-        var skill = loadoutObject as Skill;
+        var skill = loadoutSlotElement as Skill;
         if (skill != null)
-            UpdateSkillContent(skill);
+            RefreshSkillContent(skill);
     }
 
-    public void UpdateSkillContent(Skill skill)
+    public void RefreshSkillContent(Skill skill)
     {
-
+        //TODO
     }
 
-    public void UpdateItemContent(Item item)
+    public void RefreshItemContent(Item item)
     {
-
+        //TODO
     }
 }

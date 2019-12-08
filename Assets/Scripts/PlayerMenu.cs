@@ -13,12 +13,12 @@ public class PlayerMenu : UIBaseBehaviour
     [Header("Loadout")]
     public float scrollSpeed = 0.15f;
     public MenuOption loadoutObjectPrefab;
-    public Slot<LoadoutSlotElement> loadoutSlotPrefab;
+    public Slot loadoutSlotPrefab;
     public Transform slotsParent;
     #endregion
 
     #region Properties
-    public List<KeyValuePair<Slot<LoadoutSlotElement>, SlotType>> LoadoutSlots { get; set; } = new List<KeyValuePair<Slot<LoadoutSlotElement>, SlotType>>();
+    public List<KeyValuePair<Slot, SlotType>> LoadoutSlots { get; set; } = new List<KeyValuePair<Slot, SlotType>>();
     public MenuOption CurrentMenuOption { get; private set; }
     public Player Player { get; set; }
 
@@ -34,6 +34,13 @@ public class PlayerMenu : UIBaseBehaviour
             _focusedLoadoutSlotIndex = value;
 
             RefreshFocusedLoadoutSlot();
+        }
+    }
+    public Slot FocusedLoadoutSlot
+    {
+        get
+        {
+            return LoadoutSlots[FocusedLoadoutSlotIndex].Key;
         }
     }
 
@@ -61,68 +68,75 @@ public class PlayerMenu : UIBaseBehaviour
     public event OnSelectionChanged SelectionChanged;
     #endregion
 
-    public void MoveSelection(Direction direction)
-    {
-        switch (direction)
-        {
-            case Direction.Left:
-                if (FocusedLoadoutSlotIndex > 0)
-                    FocusedLoadoutSlotIndex--;
-                else
-                    Select(SelectedMenuOption.Toggle.FindSelectableOnLeft());
-                break;
-            case Direction.Down:
-                Select(SelectedMenuOption.Toggle.FindSelectableOnDown());
-                break;
-            case Direction.Up:
-                Select(SelectedMenuOption.Toggle.FindSelectableOnUp());
-                break;
-            case Direction.Right:
-                if (FocusedLoadoutSlotIndex < LoadoutSlots.Count - 1)
-                    FocusedLoadoutSlotIndex++;
-                else
-                    Select(SelectedMenuOption.Toggle.FindSelectableOnRight());
-                break;
-        }
-    }
+    //public void MoveSelection(Direction direction)
+    //{
+    //    switch (direction)
+    //    {
+    //        case Direction.Left:
+    //            if (FocusedLoadoutSlotIndex > 0)
+    //                FocusedLoadoutSlotIndex--;
+    //            else
+    //                Select(SelectedMenuOption.Toggle.FindSelectableOnLeft());
+    //            break;
+    //        case Direction.Down:
+    //            Select(SelectedMenuOption.Toggle.FindSelectableOnDown());
+    //            break;
+    //        case Direction.Up:
+    //            Select(SelectedMenuOption.Toggle.FindSelectableOnUp());
+    //            break;
+    //        case Direction.Right:
+    //            if (FocusedLoadoutSlotIndex < LoadoutSlots.Count - 1)
+    //                FocusedLoadoutSlotIndex++;
+    //            else
+    //                Select(SelectedMenuOption.Toggle.FindSelectableOnRight());
+    //            break;
+    //    }
+    //}
 
     public void Confirm()
     {
-        if (!Player.IsReady)
-        {
-            Player.IsReady = true;
+        //if (!Player.IsReady)
+        //{
+        //    Player.IsReady = true;
 
-            Player.CurrentTarget = FindObjectOfType<Enemy>();
-        }
+        //    Player.CurrentTarget = FindObjectOfType<Enemy>();
+        //}
     }
 
     private void RefreshFocusedLoadoutSlot()
     {
         var focusedSlot = LoadoutSlots[FocusedLoadoutSlotIndex];
 
-        if (focusedSlot.Key.PickedMenuOption != null)
-            Select(focusedSlot.Key.PickedMenuOption.Toggle);
+        if (focusedSlot.Key.SelectedMenuOption != null)
+            Select(focusedSlot.Key.SelectedMenuOption.Toggle);
         else
             Select(focusedSlot.Key.SlotElements.First().Key.Toggle);
     }
 
-    public void ExitMenu()
+    public void InitLoadoutSlots()
     {
-        Hide();
-    }
-
-    public void InitLoadoutSlots(PlayerClass playerClass)
-    {
-        foreach (var slotType in playerClass.slots)
+        foreach (var slotType in Player.PlayerClass.slots)
         {
             var loadoutSlot = Instantiate(loadoutSlotPrefab, slotsParent);
-            LoadoutSlots.Add(new KeyValuePair<Slot<LoadoutSlotElement>, SlotType>(loadoutSlot, slotType));
+            LoadoutSlots.Add(new KeyValuePair<Slot, SlotType>(loadoutSlot, slotType));
+        }
+    }
+
+    public void SwitchFocus(Direction direction)
+    {
+        if (direction == Direction.Left && FocusedLoadoutSlotIndex > 0)
+        {
+            FocusedLoadoutSlotIndex--;
+        }
+        else if (direction == Direction.Right && FocusedLoadoutSlotIndex < LoadoutSlots.Count - 1)
+        {
+            FocusedLoadoutSlotIndex++;
         }
     }
 
     public void RefreshLoadout()
     {
-        var loadoutObjects = new List<LoadoutSlotElement>();
+        var loadoutObjects = new List<SlotElement>();
 
         loadoutObjects.AddRange(Player.Items);
         loadoutObjects.AddRange(Player.Skills);
@@ -131,6 +145,8 @@ public class PlayerMenu : UIBaseBehaviour
         {
             loadoutSlot.Key.Refresh(loadoutObjects);
         }
+
+        Select(LoadoutSlots.First().Key.GetComponent<Selectable>());
     }
 
     public void Select(Selectable selectable)

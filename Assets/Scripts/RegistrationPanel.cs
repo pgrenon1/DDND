@@ -1,26 +1,44 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RegistrationPanel : UIBaseBehaviour
 {
+    public Slot PlayerClassSlot { get; set; }
 
-    private Slot<PlayerClassSlotElement> _playerClassSlot;
+    private bool _hasJoined = false;
     private Player _player;
 
     private void Start()
     {
-        _playerClassSlot = GetComponent<Slot<PlayerClassSlotElement>>();
+        PlayerClassSlot = GetComponent<Slot>();
         _player = GetComponentInParent<Player>();
 
-        PopulateClasses();
+        PopulatePlayerClasses();
     }
 
-    private void PopulateClasses()
+    private void PopulatePlayerClasses()
     {
+        var playerClassSlotElements = new List<SlotElement>();
+
         foreach (var playerClass in GameManager.Instance.playerClasses)
         {
             var playerClassSlotElement = new PlayerClassSlotElement(playerClass);
+            playerClassSlotElements.Add(playerClassSlotElement);
         }
+
+        PlayerClassSlot.Refresh(playerClassSlotElements);
     }
+
+    //private void Update()
+    //{
+    //    if (!_hasJoined && Input.anyKeyDown)
+    //    {
+    //        _hasJoined = true;
+
+    //        pressAnyKey.gameObject.SetActive(false);
+    //    }
+    //}
 }

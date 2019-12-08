@@ -8,8 +8,6 @@ public class MenuOption : UIBaseBehaviour
 {
     public TextMeshProUGUI optionText;
     public Image mainImage;
-    public Image leftArrow;
-    public Image rightArrow;
 
     public delegate void OnConfirm();
     public OnConfirm OnOptionConfirm;
@@ -29,21 +27,11 @@ public class MenuOption : UIBaseBehaviour
     public virtual void Select()
     {
         Toggle.Select();
-
-        if (leftArrow)
-            leftArrow.enabled = true;
-
-        if (rightArrow)
-            rightArrow.enabled = true;
     }
 
     public void Deselect()
     {
-        if (leftArrow)
-            leftArrow.enabled = false;
 
-        if (rightArrow)
-            rightArrow.enabled = false;
     }
 
     public virtual void Confirm()
