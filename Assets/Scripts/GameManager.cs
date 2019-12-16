@@ -5,21 +5,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//public enum GameState
-//{
-//    MainMenu,
-//    Registeration,
-//    Map,
-//    Encounter
-//}
-
-//public enum EncounterState
-//{
-//    Loadout,
-//    Combat,
-//    Review
-//}
-
 [ShowOdinSerializedPropertiesInInspector]
 public class GameManager : SingletonMonoBehaviour<GameManager>
 {
@@ -32,8 +17,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     public bool SongIsPlaying { get; set; }
     public Enemy CurrentEnemy { get; set; }
-    public IGameState GameState { get; set; }
     public List<Player> Players { get; set; } = new List<Player>();
+    public GameStateBase State;
 
     [System.NonSerialized, OdinSerialize, ReadOnly]
     public Song currentSong;
@@ -63,18 +48,13 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
         _musicSource = Instantiate(musicSourcePrefab, transform);
 
-        SpawnEnemy(enemyPrefabs[0]);
+        //SpawnEnemy(enemyPrefabs[0]);
     }
 
     private void Start()
     {
-
-
-        foreach (var player in Players)
-        {
-            //player.Init();
-            //player.PickLoadout();
-        }
+        State = GameStateBase.gameStateBase;
+        State.ToState(this, GameStateBase.gameStateRegistration);
     }
 
     private void SpawnEnemy(Enemy enemyPrefab)
@@ -100,10 +80,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     private void Update()
     {
-        //if (!SongIsPlaying && players.TrueForAll(player => player.IsReady))
-        //{
-        //    StartSong();
-        //}
+
     }
 
     public void SetupSong(Song songToPlay)

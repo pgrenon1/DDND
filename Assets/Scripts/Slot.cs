@@ -12,19 +12,17 @@ public class Slot : UIBaseBehaviour
     public Image arrowDown;
     public Transform contentParent;
 
-    private PlayerMenu _playerMenu;
-    public PlayerMenu PlayerMenu
+    private Player _player;
+    public Player Player
     {
         get
         {
-            if (_playerMenu == null)
-                _playerMenu = GetComponentInParent<PlayerMenu>();
+            if (_player == null)
+                _player = GetComponentInParent<Player>();
 
-            return _playerMenu;
+            return _player;
         }
     }
-
-    public Dictionary<MenuOption, SlotElement> SlotElements { get; set; } = new Dictionary<MenuOption, SlotElement>();
 
     public MenuOption _selectedMenuOption;
     public MenuOption SelectedMenuOption
@@ -33,12 +31,14 @@ public class Slot : UIBaseBehaviour
         {
             return _selectedMenuOption;
         }
-
         private set
         {
             _selectedMenuOption = value;
+            Player.SelectedMenuOption = _selectedMenuOption;
+            ScrollToSelected();
         }
     }
+
     public SlotElement SelectedSlotElement
     {
         get
@@ -55,6 +55,8 @@ public class Slot : UIBaseBehaviour
         return SelectedSlotElement as T;
     }
 
+    public Dictionary<MenuOption, SlotElement> SlotElements { get; set; } = new Dictionary<MenuOption, SlotElement>();
+
     private ToggleGroup _toggleGroup;
     private InfoPanel _infoPanel;
 
@@ -63,18 +65,18 @@ public class Slot : UIBaseBehaviour
         _toggleGroup = GetComponent<ToggleGroup>();
     }
 
-    private void Start()
-    {
-        PlayerMenu.SelectionChanged += PlayerMenu_SelectionChanged;
-    }
+    //private void Start()
+    //{
+    //    Player.SelectionChanged += PlayerMenu_SelectionChanged;
+    //}
 
-    private void PlayerMenu_SelectionChanged(MenuOption selected)
-    {
-        if (SlotElements.ContainsKey(selected))
-        {
-            SetPicked(selected);
-        }
-    }
+    //private void PlayerMenu_SelectionChanged(MenuOption selected)
+    //{
+    //    if (SlotElements.ContainsKey(selected))
+    //    {
+    //        Select(selected.Toggle);
+    //    }
+    //}
 
     public IEnumerable<T> GetSlotElements<T>() where T : SlotElement
     {
@@ -83,21 +85,21 @@ public class Slot : UIBaseBehaviour
                 yield return slotElement.Value as T;
     }
 
-    private void SetPicked(MenuOption newPicked)
-    {
-        SelectedMenuOption = newPicked;
-        ScrollToSelected();
+    //private void SetPicked(MenuOption newPicked)
+    //{
+    //    SelectedMenuOption = newPicked;
+    //    ScrollToSelected();
 
-        if (_infoPanel != null)
-            _infoPanel.RefreshContent(SelectedSlotElement);
-    }
+    //    if (_infoPanel != null)
+    //        _infoPanel.RefreshContent(SelectedSlotElement);
+    //}
 
     private void UpdateInteractable()
     {
-        foreach (var menuOption in SlotElements)
-        {
-            menuOption.Key.Toggle.interactable = PlayerMenu.LoadoutSlots[PlayerMenu.FocusedLoadoutSlotIndex].Key == this;
-        }
+        //foreach (var menuOption in SlotElements)
+        //{
+        //    menuOption.Key.Toggle.interactable = PlayerMenu.LoadoutSlots[PlayerMenu.FocusedLoadoutSlotIndex].Key == this;
+        //}
     }
 
     private void Update()
@@ -109,10 +111,13 @@ public class Slot : UIBaseBehaviour
 
     private void UpdateArrowsVisibility()
     {
-        var showArrows = SlotElements.ContainsKey(PlayerMenu.SelectedMenuOption);
+        if (Player.SelectedMenuOption == null)
+            return;
 
-        arrowUp.gameObject.SetActive(showArrows && PlayerMenu.SelectedMenuOption.transform.GetSiblingIndex() > 0);
-        arrowDown.gameObject.SetActive(showArrows && PlayerMenu.SelectedMenuOption.transform.GetSiblingIndex() < contentParent.childCount - 1);
+        var showArrows = SlotElements.ContainsKey(Player.SelectedMenuOption);
+
+        arrowUp.gameObject.SetActive(showArrows && SelectedMenuOption.transform.GetSiblingIndex() > 0);
+        arrowDown.gameObject.SetActive(showArrows && SelectedMenuOption.transform.GetSiblingIndex() < contentParent.childCount - 1);
     }
 
     private void RemoveExtraMenuOptions(List<SlotElement> loadoutObjects)
@@ -134,28 +139,30 @@ public class Slot : UIBaseBehaviour
         }
     }
 
-    private void AddMissingMenuOptions(List<SlotElement> loadoutObjects)
+    private void AddMissingMenuOptions(List<SlotElement> slotElements)
     {
-        foreach (var loadoutObject in loadoutObjects)
+        foreach (var slotElement in slotElements)
         {
-            if (!SlotElements.Any(pair => pair.Value == loadoutObject))
+            if (!SlotElements.Any(pair => pair.Value == slotElement))
             {
-                var menuOption = Instantiate(PlayerMenu.loadoutObjectPrefab, contentParent);
+                var menuOption = Instantiate(Player.menuOptionPrefab, contentParent);
                 menuOption.Toggle.group = _toggleGroup;
-                menuOption.mainImage.sprite = loadoutObject.sprite;
-                menuOption.name = loadoutObject.GetType().ToString() + loadoutObject.objectName;
-                SlotElements.Add(menuOption, loadoutObject);
+                menuOption.mainImage.sprite = slotElement.sprite;
+                menuOption.name = slotElement.GetType().ToString() + slotElement.elementName;
+                SlotElements.Add(menuOption, slotElement);
             }
         }
+    }
+
+    public void SelectFirst()
+    {
+        Select(SlotElements.First().Key.Toggle);
     }
 
     public void Refresh(List<SlotElement> slotElements)
     {
         RemoveExtraMenuOptions(slotElements);
         AddMissingMenuOptions(slotElements);
-
-        if (SelectedMenuOption == null)
-            SetPicked(SlotElements.First().Key);
     }
 
     public void ScrollToSelected()
@@ -176,7 +183,7 @@ public class Slot : UIBaseBehaviour
 
             var targetY = indexDifference * loadoutObjectHeight;
 
-            menuOptions[i].RectTransform.DOLocalMove(new Vector2(0f, targetY), PlayerMenu.scrollSpeed);
+            menuOptions[i].RectTransform.DOLocalMove(new Vector2(0f, targetY), Player.scrollSpeed);
         }
     }
 

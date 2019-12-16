@@ -3,22 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Direction
-{
-    Left = 0,
-    Right = 1,
-    Up = 2,
-    Down = 3
-}
-
-public enum CornerButton
-{
-    Cross,
-    Circle,
-    Square,
-    Triangle
-}
-
 public interface IPlayerState
 {
     void OnEnter(Player player);
@@ -46,9 +30,9 @@ public class PlayerStateBase : IPlayerState
 
     public virtual void ToState(Player player, PlayerStateBase targetState)
     {
-        player.State.OnExit(player);
-        player.State = targetState;
-        player.State.OnEnter(player);
+        //player.State.OnExit(player);
+        //player.State = targetState;
+        //player.State.OnEnter(player);
     }
 
     public virtual void Update(Player player)
@@ -58,45 +42,45 @@ public class PlayerStateBase : IPlayerState
 
     public virtual void HandleInputs(Player player)
     {
-        if (player.Actions.Left.WasPressed)
-        {
-            DirectionPressed(player, Direction.Left);
-        }
+        //if (player.Actions.Left.WasPressed)
+        //{
+        //    DirectionPressed(player, Direction.Left);
+        //}
 
-        if (player.Actions.Up.WasPressed)
-        {
-            DirectionPressed(player, Direction.Up);
-        }
+        //if (player.Actions.Up.WasPressed)
+        //{
+        //    DirectionPressed(player, Direction.Up);
+        //}
 
-        if (player.Actions.Down.WasPressed)
-        {
-            DirectionPressed(player, Direction.Down);
-        }
+        //if (player.Actions.Down.WasPressed)
+        //{
+        //    DirectionPressed(player, Direction.Down);
+        //}
 
-        if (player.Actions.Right.WasPressed)
-        {
-            DirectionPressed(player, Direction.Right);
-        }
+        //if (player.Actions.Right.WasPressed)
+        //{
+        //    DirectionPressed(player, Direction.Right);
+        //}
 
-        if (player.Actions.Cross.WasPressed)
-        {
-            ButtonPressed(player, CornerButton.Cross);
-        }
+        //if (player.Actions.Cross.WasPressed)
+        //{
+        //    ButtonPressed(player, CornerButton.Cross);
+        //}
 
-        if (player.Actions.Circle.WasPressed)
-        {
-            ButtonPressed(player, CornerButton.Circle);
-        }
+        //if (player.Actions.Circle.WasPressed)
+        //{
+        //    ButtonPressed(player, CornerButton.Circle);
+        //}
 
-        if (player.Actions.Square.WasPressed)
-        {
-            ButtonPressed(player, CornerButton.Square);
-        }
+        //if (player.Actions.Square.WasPressed)
+        //{
+        //    ButtonPressed(player, CornerButton.Square);
+        //}
 
-        if (player.Actions.Triangle.WasPressed)
-        {
-            ButtonPressed(player, CornerButton.Triangle);
-        }
+        //if (player.Actions.Triangle.WasPressed)
+        //{
+        //    ButtonPressed(player, CornerButton.Triangle);
+        //}
     }
 
     protected virtual void ButtonPressed(Player player, CornerButton button)
@@ -187,6 +171,6 @@ public class PlayerStateBattle : PlayerStateBase
     {
         base.ButtonPressed(player, button);
 
-        player.ActivateItemOrSkill(button);
+        player.ActivateSkill(button);
     }
 }

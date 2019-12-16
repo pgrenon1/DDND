@@ -14,7 +14,7 @@ public class Skill : LoadoutSlotElement
 
     public Skill(SkillData skillData)
     {
-        objectName = skillData.name;
+        elementName = skillData.name;
         description = skillData.description;
         sprite = skillData.sprite;
         foreach (var effect in skillData.effects)

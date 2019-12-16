@@ -16,21 +16,18 @@ public class Player : Targetable
     public Image rightArrow;
     public RegistrationPanel registrationPanel;
 
-    [Space]
-    public int playerLevel;
-
     [Header("Energy")]
     public TextMeshProUGUI energyText;
     public Image energyFill;
 
-    public readonly PlayerStateLoadout playerStateLoadout;
-    public readonly PlayerStateRegistration playerStateRegistration;
+    [Header("Settings")]
+    public MenuOption menuOptionPrefab;
+    public float scrollSpeed = 0.15f;
 
     public PlayerClass PlayerClass { get; set; }
-    public IPlayerState State { get; set; }
     public bool IsDancing { get; set; }
     public Conductor Conductor { get; private set; }
-    public PlayerMenu PlayerMenu { get; private set; }
+    public LoadoutPanel PlayerMenu { get; private set; }
     public List<Item> Items { get; set; } = new List<Item>();
     public List<Skill> Skills { get; set; } = new List<Skill>();
     public Targetable CurrentTarget { get; set; }
@@ -38,22 +35,26 @@ public class Player : Targetable
     public float Energy { get; set; }
     public PlayerActions Actions { get; set; }
     public PlayerParent PlayerParent { get; set; }
+    public int PlayerLevel { get; set; }
+    public MenuOption SelectedMenuOption { get; set; }
+
+    //public delegate void OnSelectionChanged(MenuOption Selected);
+    //public event OnSelectionChanged SelectionChanged;
 
     public float EnergyMax
     {
         get
         {
-            return PlayerClass.maxEnergy.GetValue(playerLevel);
+            return PlayerClass.maxEnergy.GetValue(PlayerLevel);
         }
     }
-
 
     public void Awake()
     {
         Conductor = GetComponentInChildren<Conductor>();
         Conductor.Player = this;
 
-        PlayerMenu = GetComponentInChildren<PlayerMenu>();
+        PlayerMenu = GetComponentInChildren<LoadoutPanel>();
         PlayerMenu.Player = this;
     }
 
@@ -88,7 +89,7 @@ public class Player : Targetable
 
     private void Update()
     {
-        State.Update(this);
+        GameManager.Instance.State.HandleInputs(this);
     }
 
     public void UpdateEnergy()
@@ -153,15 +154,17 @@ public class Player : Targetable
         //PlayerMenu.Select(PlayerMenu.LoadoutSlots.First().Key.GetComponent<Selectable>());
     }
 
-    public void ActivateItemOrSkill(CornerButton button)
+    public void ActivateSkill(CornerButton button)
     {
-        var item = GetLoadoutSlotElement(button) as Item;
-        if (item != null)
-        {
-            //"Activate" item
-        }
+        var loadoutSlotElement = GetLoadoutSlotElement(button);
 
-        var skill = GetLoadoutSlotElement(button) as Skill;
+        //var item = loadoutSlotElement as Item;
+        //if (item != null)
+        //{
+        //    //"Activate" item?
+        //}
+
+        var skill = loadoutSlotElement as Skill;
         if (skill != null)
         {
             skill.Activate();
@@ -170,6 +173,7 @@ public class Player : Targetable
 
     private LoadoutSlotElement GetLoadoutSlotElement(CornerButton button)
     {
-
+        var slot = PlayerMenu.LoadoutSlots[(int)button];
+        return slot.Key.GetPickedSlotElement<Skill>();
     }
 }

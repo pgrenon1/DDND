@@ -171,8 +171,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibilityTransitionDuration: 0
-  scale: {x: 0, y: 0.1, z: 0}
-  speed: 20
+  scale: {x: 0, y: 0, z: 0}
+  speed: 3
 --- !u!114 &85150007
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -343,8 +343,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibilityTransitionDuration: 0
-  scale: {x: 0, y: 0.1, z: 0}
-  speed: 20
+  scale: {x: 0, y: 0, z: 0}
+  speed: 3
 --- !u!114 &144667470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -788,8 +788,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibilityTransitionDuration: 0
-  scale: {x: 0, y: 0.1, z: 0}
-  speed: 20
+  scale: {x: 0, y: 0, z: 0}
+  speed: 3
 --- !u!114 &800747294
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -997,8 +997,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibilityTransitionDuration: 0
-  scale: {x: 0, y: 0.1, z: 0}
-  speed: 20
+  scale: {x: 0, y: 0, z: 0}
+  speed: 3
 --- !u!114 &936138218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1316,8 +1316,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibilityTransitionDuration: 0
-  scale: {x: 0, y: 0.1, z: 0}
-  speed: 20
+  scale: {x: 0, y: 0, z: 0}
+  speed: 3
 --- !u!114 &983803493
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1488,8 +1488,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibilityTransitionDuration: 0
-  scale: {x: 0, y: 0.1, z: 0}
-  speed: 20
+  scale: {x: 0, y: 0, z: 0}
+  speed: 3
 --- !u!114 &983891059
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1962,8 +1962,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   musicSourcePrefab: {fileID: 896297858689920230, guid: 414ffd11f21e36542b154aa36a67d2fb,
     type: 3}
-  players:
-  - {fileID: 0}
   playerClasses:
   - {fileID: 11400000, guid: 8b583007047a8954ab5b9fde21d1e2bb, type: 2}
   - {fileID: 11400000, guid: 853c440b786308443aa5db67d3fb723c, type: 2}
@@ -2238,8 +2236,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibilityTransitionDuration: 0
-  scale: {x: 0, y: 0.1, z: 0}
-  speed: 20
+  scale: {x: 0, y: 0, z: 0}
+  speed: 3
 --- !u!114 &2048628919
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2410,8 +2408,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visibilityTransitionDuration: 0
-  scale: {x: 0, y: 0.1, z: 0}
-  speed: 20
+  scale: {x: 0, y: 0, z: 0}
+  speed: 3
 --- !u!114 &2065595485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2563,7 +2561,7 @@ MonoBehaviour:
   logDebugInfo: 1
   invertYAxis: 0
   useFixedUpdate: 0
-  dontDestroyOnLoad: 1
+  dontDestroyOnLoad: 0
   suspendInBackground: 0
   enableICade: 0
   enableXInput: 0

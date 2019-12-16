@@ -13,7 +13,7 @@ public class LoadoutInfoPanel : InfoPanel
     public override void RefreshContent(SlotElement loadoutSlotElement)
     {
         image.sprite = loadoutSlotElement.sprite;
-        title.text = loadoutSlotElement.objectName;
+        title.text = loadoutSlotElement.elementName;
         category.text = loadoutSlotElement.GetType().ToString();
         description.text = loadoutSlotElement.description;
 

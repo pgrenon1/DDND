@@ -1,6 +1,23 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+public enum Direction
+{
+    Left = 0,
+    Right = 1,
+    Up = 2,
+    Down = 3
+}
+
+public enum CornerButton
+{
+    Cross,
+    Circle,
+    Square,
+    Triangle
+}
 
 public interface IGameState
 {
@@ -11,13 +28,16 @@ public interface IGameState
     void ToState(GameManager gameManager, IGameState targetState);
 
     void Update(GameManager gameManager);
+
+    void HandleInputs(Player player);
 }
 
 public class GameStateBase : IGameState
 {
-    public static readonly GameStateRegistration gameStateRegistration;
-    public static readonly GameStateLoadout gameStateLoadout;
-    public static readonly GameStateBattle gameStateBattle;
+    public static readonly GameStateBase gameStateBase = new GameStateBase();
+    public static readonly GameStateRegistration gameStateRegistration = new GameStateRegistration();
+    public static readonly GameStateLoadout gameStateLoadout = new GameStateLoadout();
+    public static readonly GameStateBattle gameStateBattle = new GameStateBattle();
 
     public virtual void OnEnter(GameManager gameManager)
     {
@@ -38,6 +58,59 @@ public class GameStateBase : IGameState
     {
 
     }
+
+    public virtual void HandleInputs(Player player)
+    {
+        if (player.Actions.Left.WasPressed)
+        {
+            DirectionPressed(player, Direction.Left);
+        }
+
+        if (player.Actions.Up.WasPressed)
+        {
+            DirectionPressed(player, Direction.Up);
+        }
+
+        if (player.Actions.Down.WasPressed)
+        {
+            DirectionPressed(player, Direction.Down);
+        }
+
+        if (player.Actions.Right.WasPressed)
+        {
+            DirectionPressed(player, Direction.Right);
+        }
+
+        if (player.Actions.Cross.WasPressed)
+        {
+            ButtonPressed(player, CornerButton.Cross);
+        }
+
+        if (player.Actions.Circle.WasPressed)
+        {
+            ButtonPressed(player, CornerButton.Circle);
+        }
+
+        if (player.Actions.Square.WasPressed)
+        {
+            ButtonPressed(player, CornerButton.Square);
+        }
+
+        if (player.Actions.Triangle.WasPressed)
+        {
+            ButtonPressed(player, CornerButton.Triangle);
+        }
+    }
+
+    protected virtual void ButtonPressed(Player player, CornerButton button)
+    {
+
+    }
+
+    protected virtual void DirectionPressed(Player player, Direction direction)
+    {
+        player.DirectionFeedback(direction);
+    }
 }
 
 public class GameStateRegistration : GameStateBase
@@ -51,10 +124,57 @@ public class GameStateRegistration : GameStateBase
             ToState(gameManager, gameStateLoadout);
         }
     }
+
+    protected override void DirectionPressed(Player player, Direction direction)
+    {
+        base.DirectionPressed(player, direction);
+
+        player.registrationPanel.PlayerClassSlot.MoveSelection(direction);
+    }
+
+    public override void HandleInputs(Player player)
+    {
+        player.IsReady = player.Actions.Cross.IsPressed;
+
+        base.HandleInputs(player);
+    }
+
+    public override void OnExit(GameManager gameManager)
+    {
+        base.OnExit(gameManager);
+
+        foreach (var player in PlayerManager.Instance.Players)
+        {
+            var pickedPlayerClassSlotElement = player.registrationPanel.PlayerClassSlot.SelectedSlotElement as PlayerClassSlotElement;
+            var pickedPlayerClass = pickedPlayerClassSlotElement.PlayerClass;
+
+            player.InitPlayer(pickedPlayerClass);
+        }
+    }
+
+    public override void OnEnter(GameManager gameManager)
+    {
+        base.OnEnter(gameManager);
+
+        foreach (var player in PlayerManager.Instance.Players)
+        {
+            player.registrationPanel.PlayerClassSlot.SelectFirst();
+        }
+    }
 }
 
 public class GameStateLoadout : GameStateBase
 {
+    public override void OnEnter(GameManager gameManager)
+    {
+        base.OnEnter(gameManager);
+
+        foreach (var player in PlayerManager.Instance.Players)
+        {
+
+        }
+    }
+
     public override void Update(GameManager gameManager)
     {
         base.Update(gameManager);
@@ -65,15 +185,14 @@ public class GameStateLoadout : GameStateBase
         }
     }
 
-    //Entering Loadout State
-    public override void OnEnter(GameManager gameManager)
+    protected override void DirectionPressed(Player player, Direction direction)
     {
-        base.OnEnter(gameManager);
+        base.DirectionPressed(player, direction);
 
-        foreach (var player in PlayerManager.Instance.Players)
-        {
-            player.State.ToState(player, player.playerStateLoadout);
-        }
+        if (direction == Direction.Down || direction == Direction.Up)
+            player.PlayerMenu.FocusedLoadoutSlot.MoveSelection(direction);
+        else if (direction == Direction.Left || direction == Direction.Right)
+            player.PlayerMenu.SwitchFocus(direction);
     }
 }
 

@@ -67,7 +67,7 @@ public class Conductor : MonoBehaviour
     public Player Player { get; set; }
     public float SongPositionInSeconds { get; private set; }
     public List<Note> ActiveNotes { get; private set; } = new List<Note>();
-    public PlayerMenu PlayerMenu { get; private set; }
+    public LoadoutPanel PlayerMenu { get; private set; }
 
     private float _currentComboScore;
     private int _currentComboCount;

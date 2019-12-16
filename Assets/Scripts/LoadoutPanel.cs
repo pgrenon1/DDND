@@ -5,37 +5,17 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerMenu : UIBaseBehaviour
+public class LoadoutPanel : UIBaseBehaviour
 {
-    #region Inspector Attributes
-    public MenuOption readyMenuOption;
-
     [Header("Loadout")]
-    public float scrollSpeed = 0.15f;
-    public MenuOption loadoutObjectPrefab;
+    public MenuOption menuOptionPrefab;
     public Slot loadoutSlotPrefab;
     public Transform slotsParent;
-    #endregion
 
-    #region Properties
     public List<KeyValuePair<Slot, SlotType>> LoadoutSlots { get; set; } = new List<KeyValuePair<Slot, SlotType>>();
     public MenuOption CurrentMenuOption { get; private set; }
     public Player Player { get; set; }
-
-    private int _focusedLoadoutSlotIndex;
-    public int FocusedLoadoutSlotIndex
-    {
-        get
-        {
-            return _focusedLoadoutSlotIndex;
-        }
-        set
-        {
-            _focusedLoadoutSlotIndex = value;
-
-            RefreshFocusedLoadoutSlot();
-        }
-    }
+    public int FocusedLoadoutSlotIndex { get; set; }
     public Slot FocusedLoadoutSlot
     {
         get
@@ -44,29 +24,25 @@ public class PlayerMenu : UIBaseBehaviour
         }
     }
 
-    private MenuOption _selectedMenuOption;
-    public MenuOption SelectedMenuOption
-    {
-        get
-        {
-            return _selectedMenuOption;
-        }
-        private set
-        {
-            if (_selectedMenuOption)
-                _selectedMenuOption.Deselect();
+    //private MenuOption _selectedMenuOption;
+    //public MenuOption SelectedMenuOption
+    //{
+    //    get
+    //    {
+    //        return _selectedMenuOption;
+    //    }
+    //    private set
+    //    {
+    //        if (_selectedMenuOption)
+    //            _selectedMenuOption.Deselect();
 
-            _selectedMenuOption = value;
-            _selectedMenuOption.Select();
+    //        _selectedMenuOption = value;
+    //        _selectedMenuOption.Select();
 
-            if (SelectionChanged != null)
-                SelectionChanged(_selectedMenuOption);
-        }
-    }
-
-    public delegate void OnSelectionChanged(MenuOption Selected);
-    public event OnSelectionChanged SelectionChanged;
-    #endregion
+    //        if (SelectionChanged != null)
+    //            SelectionChanged(_selectedMenuOption);
+    //    }
+    //}
 
     //public void MoveSelection(Direction direction)
     //{
@@ -103,15 +79,15 @@ public class PlayerMenu : UIBaseBehaviour
         //}
     }
 
-    private void RefreshFocusedLoadoutSlot()
-    {
-        var focusedSlot = LoadoutSlots[FocusedLoadoutSlotIndex];
+    //private void RefreshFocusedLoadoutSlot()
+    //{
+    //    var focusedSlot = LoadoutSlots[FocusedLoadoutSlotIndex];
 
-        if (focusedSlot.Key.SelectedMenuOption != null)
-            Select(focusedSlot.Key.SelectedMenuOption.Toggle);
-        else
-            Select(focusedSlot.Key.SlotElements.First().Key.Toggle);
-    }
+    //    if (focusedSlot.Key.SelectedMenuOption != null)
+    //        Select(focusedSlot.Key.SelectedMenuOption.Toggle);
+    //    else
+    //        Select(focusedSlot.Key.SlotElements.First().Key.Toggle);
+    //}
 
     public void InitLoadoutSlots()
     {
@@ -146,15 +122,15 @@ public class PlayerMenu : UIBaseBehaviour
             loadoutSlot.Key.Refresh(loadoutObjects);
         }
 
-        Select(LoadoutSlots.First().Key.GetComponent<Selectable>());
+        LoadoutSlots.First().Key.SelectFirst();
     }
 
-    public void Select(Selectable selectable)
-    {
-        if (selectable == null)
-            return;
+    //public void Select(Selectable selectable)
+    //{
+    //    if (selectable == null)
+    //        return;
 
-        var menuOption = selectable.GetComponent<MenuOption>();
-        SelectedMenuOption = menuOption;
-    }
+    //    var menuOption = selectable.GetComponent<MenuOption>();
+    //    SelectedMenuOption = menuOption;
+    //}
 }

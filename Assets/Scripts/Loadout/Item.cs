@@ -12,7 +12,7 @@ public class Item : LoadoutSlotElement
 
     public Item(ItemData itemData)
     {
-        objectName = itemData.objectName;
+        elementName = itemData.objectName;
         description = itemData.description;
         sprite = itemData.sprite;
         foreach (var itemEffect in itemData.itemEffects)

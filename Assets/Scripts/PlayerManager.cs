@@ -128,7 +128,7 @@ public class PlayerManager : SingletonMonoBehaviour<PlayerManager>
 
     private bool JoinButtonWasPressedOnListener(PlayerActions actions)
     {
-        return actions.Device.AnyButton.WasPressed;
+        return actions.Cross.WasPressed;
     }
 
     private void OnDeviceDetached(InputDevice inputDevice)

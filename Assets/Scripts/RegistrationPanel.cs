@@ -8,12 +8,11 @@ public class RegistrationPanel : UIBaseBehaviour
 {
     public Slot PlayerClassSlot { get; set; }
 
-    private bool _hasJoined = false;
     private Player _player;
 
     private void Start()
     {
-        PlayerClassSlot = GetComponent<Slot>();
+        PlayerClassSlot = GetComponentInChildren<Slot>();
         _player = GetComponentInParent<Player>();
 
         PopulatePlayerClasses();

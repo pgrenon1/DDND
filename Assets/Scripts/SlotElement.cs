@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SlotElement
 {
-    public string objectName;
+    public string elementName;
     public string description;
     public Sprite sprite;
 }
