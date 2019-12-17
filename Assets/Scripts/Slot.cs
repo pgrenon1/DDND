@@ -12,6 +12,9 @@ public class Slot : UIBaseBehaviour
     public Image arrowDown;
     public Transform contentParent;
 
+    public delegate void OnSelectionChanged(SlotElement slotElement);
+    public event OnSelectionChanged SelectionChanged;
+
     private Player _player;
     public Player Player
     {
@@ -33,9 +36,17 @@ public class Slot : UIBaseBehaviour
         }
         private set
         {
-            _selectedMenuOption = value;
+            if (_selectedMenuOption != value)
+            {
+                _selectedMenuOption = value;
+
+                if (SelectionChanged != null)
+                    SelectionChanged(SelectedSlotElement);
+            }
+
             Player.SelectedMenuOption = _selectedMenuOption;
             ScrollToSelected();
+
         }
     }
 
@@ -50,10 +61,6 @@ public class Slot : UIBaseBehaviour
         }
     }
 
-    public T GetPickedSlotElement<T>() where T : SlotElement
-    {
-        return SelectedSlotElement as T;
-    }
 
     public Dictionary<MenuOption, SlotElement> SlotElements { get; set; } = new Dictionary<MenuOption, SlotElement>();
 
@@ -65,6 +72,16 @@ public class Slot : UIBaseBehaviour
         _toggleGroup = GetComponent<ToggleGroup>();
     }
 
+    private void Start()
+    {
+
+        SelectFirst();
+    }
+
+    public T GetPickedSlotElement<T>() where T : SlotElement
+    {
+        return SelectedSlotElement as T;
+    }
     //private void Start()
     //{
     //    Player.SelectionChanged += PlayerMenu_SelectionChanged;

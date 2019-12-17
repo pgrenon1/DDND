@@ -5,7 +5,5 @@ using UnityEngine;
 
 public abstract class InfoPanel : UIBaseBehaviour
 {
-    public TextMeshProUGUI title;
 
-    public abstract void RefreshContent(SlotElement slotElement);
 }

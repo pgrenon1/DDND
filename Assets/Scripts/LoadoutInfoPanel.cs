@@ -4,13 +4,14 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LoadoutInfoPanel : InfoPanel
+public class LoadoutInfoPanel : UIBaseBehaviour
 {
     public Image image;
+    public TextMeshProUGUI title;
     public TextMeshProUGUI category;
     public TextMeshProUGUI description;
 
-    public override void RefreshContent(SlotElement loadoutSlotElement)
+    public void RefreshContent(SlotElement loadoutSlotElement)
     {
         image.sprite = loadoutSlotElement.sprite;
         title.text = loadoutSlotElement.elementName;

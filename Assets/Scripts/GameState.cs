@@ -25,7 +25,7 @@ public interface IGameState
 
     void OnExit(GameManager gameManager);
 
-    void ToState(GameManager gameManager, IGameState targetState);
+    void ToState(GameManager gameManager, GameStateBase targetState);
 
     void Update(GameManager gameManager);
 
@@ -49,9 +49,11 @@ public class GameStateBase : IGameState
 
     }
 
-    public virtual void ToState(GameManager gameManager, IGameState targetState)
+    public virtual void ToState(GameManager gameManager, GameStateBase targetState)
     {
-
+        gameManager.State.OnExit(gameManager);
+        gameManager.State = targetState;
+        gameManager.State.OnEnter(gameManager);
     }
 
     public virtual void Update(GameManager gameManager)
@@ -149,16 +151,6 @@ public class GameStateRegistration : GameStateBase
             var pickedPlayerClass = pickedPlayerClassSlotElement.PlayerClass;
 
             player.InitPlayer(pickedPlayerClass);
-        }
-    }
-
-    public override void OnEnter(GameManager gameManager)
-    {
-        base.OnEnter(gameManager);
-
-        foreach (var player in PlayerManager.Instance.Players)
-        {
-            player.registrationPanel.PlayerClassSlot.SelectFirst();
         }
     }
 }
