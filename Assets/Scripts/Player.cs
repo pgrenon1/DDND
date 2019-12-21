@@ -14,7 +14,8 @@ public class Player : Targetable
     public Image upArrow;
     public Image downArrow;
     public Image rightArrow;
-    public RegistrationPanel registrationPanel;
+    public ClassPickPanel classPickPanel;
+    public UIBaseBehaviour readyPanel;
 
     [Header("Energy")]
     public TextMeshProUGUI energyText;
@@ -27,7 +28,7 @@ public class Player : Targetable
     public PlayerClass PlayerClass { get; set; }
     public bool IsDancing { get; set; }
     public Conductor Conductor { get; private set; }
-    public LoadoutPanel PlayerMenu { get; private set; }
+    public LoadoutPanel LoadoutPanel { get; private set; }
     public List<Item> Items { get; set; } = new List<Item>();
     public List<Skill> Skills { get; set; } = new List<Skill>();
     public Targetable CurrentTarget { get; set; }
@@ -54,8 +55,8 @@ public class Player : Targetable
         Conductor = GetComponentInChildren<Conductor>();
         Conductor.Player = this;
 
-        PlayerMenu = GetComponentInChildren<LoadoutPanel>();
-        PlayerMenu.Player = this;
+        LoadoutPanel = GetComponentInChildren<LoadoutPanel>();
+        LoadoutPanel.Player = this;
     }
 
     public void InitPlayer(PlayerClass playerClass)
@@ -64,7 +65,7 @@ public class Player : Targetable
 
         InitItems();
         InitSkills();
-        PlayerMenu.InitLoadoutSlots();
+        LoadoutPanel.InitLoadoutSlots();
 
         Energy = EnergyMax;
     }
@@ -73,8 +74,7 @@ public class Player : Targetable
     {
         foreach (var itemData in PlayerClass.startingItemDatas)
         {
-            var newItem = new Item(itemData);
-            newItem.Owner = this;
+            var newItem = new Item(itemData, this);
             Items.Add(newItem);
         }
     }
@@ -83,13 +83,22 @@ public class Player : Targetable
     {
         foreach (var skillData in PlayerClass.startingSkillDatas)
         {
-            Skills.Add(new Skill(skillData));
+            Skills.Add(new Skill(skillData, this));
         }
     }
 
     private void Update()
     {
         GameManager.Instance.State.HandleInputs(this);
+
+        if (IsReady)
+        {
+            readyPanel.Show();
+        }
+        else
+        {
+            readyPanel.Hide();
+        }
     }
 
     public void UpdateEnergy()
@@ -100,7 +109,7 @@ public class Player : Targetable
 
     public void StartDancing()
     {
-        PlayerMenu.gameObject.SetActive(false);
+        LoadoutPanel.gameObject.SetActive(false);
 
         Conductor.Play();
 
@@ -173,7 +182,7 @@ public class Player : Targetable
 
     private LoadoutSlotElement GetLoadoutSlotElement(CornerButton button)
     {
-        var slot = PlayerMenu.LoadoutSlots[(int)button];
+        var slot = LoadoutPanel.LoadoutSlots[(int)button];
         return slot.Key.GetPickedSlotElement<Skill>();
     }
 }

@@ -80,7 +80,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     private void Update()
     {
-
+        State.Update(this);
     }
 
     public void SetupSong(Song songToPlay)

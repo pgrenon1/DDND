@@ -27,7 +27,7 @@ public class Slot : UIBaseBehaviour
         }
     }
 
-    public MenuOption _selectedMenuOption;
+    private MenuOption _selectedMenuOption;
     public MenuOption SelectedMenuOption
     {
         get
@@ -72,11 +72,11 @@ public class Slot : UIBaseBehaviour
         _toggleGroup = GetComponent<ToggleGroup>();
     }
 
-    private void Start()
-    {
+    //private void Start()
+    //{
 
-        SelectFirst();
-    }
+    //    SelectFirst();
+    //}
 
     public T GetPickedSlotElement<T>() where T : SlotElement
     {

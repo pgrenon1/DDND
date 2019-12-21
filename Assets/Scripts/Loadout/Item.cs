@@ -10,8 +10,9 @@ public class Item : LoadoutSlotElement
     [System.NonSerialized, OdinSerialize]
     public List<LoadoutEffect> itemEffects = new List<LoadoutEffect>();
 
-    public Item(ItemData itemData)
+    public Item(ItemData itemData, Player player)
     {
+        Owner = player;
         elementName = itemData.objectName;
         description = itemData.description;
         sprite = itemData.sprite;

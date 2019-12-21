@@ -105,7 +105,7 @@ public class PlayerStateRegistration : PlayerStateBase
     {
         base.DirectionPressed(player, direction);
 
-        player.registrationPanel.PlayerClassSlot.MoveSelection(direction);
+        player.classPickPanel.PlayerClassSlot.MoveSelection(direction);
     }
 
     public override void HandleInputs(Player player)
@@ -119,7 +119,7 @@ public class PlayerStateRegistration : PlayerStateBase
     {
         base.OnExit(player);
 
-        var pickedPlayerClassSlotElement = player.registrationPanel.PlayerClassSlot.SelectedSlotElement as PlayerClassSlotElement;
+        var pickedPlayerClassSlotElement = player.classPickPanel.PlayerClassSlot.SelectedSlotElement as PlayerClassSlotElement;
         var pickedPlayerClass = pickedPlayerClassSlotElement.PlayerClass;
 
         player.InitPlayer(pickedPlayerClass);
@@ -128,12 +128,12 @@ public class PlayerStateRegistration : PlayerStateBase
 
 public class PlayerStateLoadout : PlayerStateBase
 {
-    public override void OnEnter(Player player)
-    {
-        base.OnEnter(player);
+    //public override void OnEnter(Player player)
+    //{
+    //    base.OnEnter(player);
 
-        player.PlayerMenu.RefreshLoadout();
-    }
+    //    player.LoadoutPanel.RefreshLoadout();
+    //}
 
     public override void Update(Player player)
     {
@@ -145,9 +145,9 @@ public class PlayerStateLoadout : PlayerStateBase
         base.DirectionPressed(player, direction);
 
         if (direction == Direction.Down || direction == Direction.Up)
-            player.PlayerMenu.FocusedLoadoutSlot.MoveSelection(direction);
+            player.LoadoutPanel.FocusedLoadoutSlot.MoveSelection(direction);
         else if (direction == Direction.Left || direction == Direction.Right)
-            player.PlayerMenu.SwitchFocus(direction);
+            player.LoadoutPanel.SwitchFocus(direction);
     }
 }
 

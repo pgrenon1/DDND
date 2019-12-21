@@ -51,6 +51,7 @@ public class GameStateBase : IGameState
 
     public virtual void ToState(GameManager gameManager, GameStateBase targetState)
     {
+        Debug.Log(gameManager.State + " -> " + targetState);
         gameManager.State.OnExit(gameManager);
         gameManager.State = targetState;
         gameManager.State.OnEnter(gameManager);
@@ -117,28 +118,43 @@ public class GameStateBase : IGameState
 
 public class GameStateRegistration : GameStateBase
 {
+    //public override void OnEnter(GameManager gameManager)
+    //{
+    //    base.OnEnter(gameManager);
+
+    //    foreach (var player in PlayerManager.Instance.Players)
+    //    {
+    //        player.classPickPanel.PlayerClassSlot.SelectFirst();
+    //    }
+    //}
+
     public override void Update(GameManager gameManager)
     {
         base.Update(gameManager);
 
-        if (PlayerManager.Instance.Players.TrueForAll(x => x.IsReady))
+        var players = PlayerManager.Instance.Players;
+        if (players.Count > 0 && players.TrueForAll(x => x.IsReady))
         {
             ToState(gameManager, gameStateLoadout);
         }
     }
 
-    protected override void DirectionPressed(Player player, Direction direction)
+    protected override void ButtonPressed(Player player, CornerButton button)
     {
-        base.DirectionPressed(player, direction);
+        base.ButtonPressed(player, button);
 
-        player.registrationPanel.PlayerClassSlot.MoveSelection(direction);
+        if (button == CornerButton.Cross)
+            player.IsReady = !player.IsReady;
     }
 
-    public override void HandleInputs(Player player)
+    protected override void DirectionPressed(Player player, Direction direction)
     {
-        player.IsReady = player.Actions.Cross.IsPressed;
+        if (player.IsReady)
+            return;
 
-        base.HandleInputs(player);
+        base.DirectionPressed(player, direction);
+
+        player.classPickPanel.PlayerClassSlot.MoveSelection(direction);
     }
 
     public override void OnExit(GameManager gameManager)
@@ -147,10 +163,13 @@ public class GameStateRegistration : GameStateBase
 
         foreach (var player in PlayerManager.Instance.Players)
         {
-            var pickedPlayerClassSlotElement = player.registrationPanel.PlayerClassSlot.SelectedSlotElement as PlayerClassSlotElement;
+            var pickedPlayerClassSlotElement = player.classPickPanel.PlayerClassSlot.SelectedSlotElement as PlayerClassSlotElement;
             var pickedPlayerClass = pickedPlayerClassSlotElement.PlayerClass;
 
             player.InitPlayer(pickedPlayerClass);
+
+            player.classPickPanel.Hide();
+            player.IsReady = false;
         }
     }
 }
@@ -163,7 +182,8 @@ public class GameStateLoadout : GameStateBase
 
         foreach (var player in PlayerManager.Instance.Players)
         {
-
+            player.LoadoutPanel.FocusedLoadoutSlotIndex = 0;
+            player.LoadoutPanel.FocusedLoadoutSlot.SelectFirst();
         }
     }
 
@@ -177,14 +197,22 @@ public class GameStateLoadout : GameStateBase
         }
     }
 
+    protected override void ButtonPressed(Player player, CornerButton button)
+    {
+        base.ButtonPressed(player, button);
+
+        if (button == CornerButton.Cross)
+            player.IsReady = !player.IsReady;
+    }
+
     protected override void DirectionPressed(Player player, Direction direction)
     {
         base.DirectionPressed(player, direction);
 
         if (direction == Direction.Down || direction == Direction.Up)
-            player.PlayerMenu.FocusedLoadoutSlot.MoveSelection(direction);
+            player.LoadoutPanel.FocusedLoadoutSlot.MoveSelection(direction);
         else if (direction == Direction.Left || direction == Direction.Right)
-            player.PlayerMenu.SwitchFocus(direction);
+            player.LoadoutPanel.SwitchFocus(direction);
     }
 }
 

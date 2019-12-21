@@ -12,8 +12,9 @@ public class Skill : LoadoutSlotElement
     public int NotesLeft { get; private set; }
     public float Score { get; private set; }
 
-    public Skill(SkillData skillData)
+    public Skill(SkillData skillData, Player player)
     {
+        Owner = player;
         elementName = skillData.name;
         description = skillData.description;
         sprite = skillData.sprite;

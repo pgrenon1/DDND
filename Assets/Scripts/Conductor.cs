@@ -81,7 +81,7 @@ public class Conductor : MonoBehaviour
 
     private void Init()
     {
-        PlayerMenu = Player.PlayerMenu;
+        PlayerMenu = Player.LoadoutPanel;
     }
 
     private void Update()

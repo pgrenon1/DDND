@@ -4,8 +4,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RegistrationPanel : UIBaseBehaviour
+public class ClassPickPanel : UIBaseBehaviour
 {
+    public GameObject pickAClassParent;
+
     public Slot PlayerClassSlot { get; private set; }
     public PlayerClassInfoPanel PlayerClassInfoPanel { get; private set; }
 
@@ -20,6 +22,9 @@ public class RegistrationPanel : UIBaseBehaviour
         PopulatePlayerClasses();
 
         PlayerClassInfoPanel = GetComponentInChildren<PlayerClassInfoPanel>();
+
+        if (!PlayerClassSlot.SelectedMenuOption)
+            PlayerClassSlot.SelectFirst();
     }
 
     private void PlayerClassSlot_SelectionChanged(SlotElement slotElement)
@@ -41,5 +46,8 @@ public class RegistrationPanel : UIBaseBehaviour
         PlayerClassSlot.Refresh(playerClassSlotElements);
     }
 
-
+    private void Update()
+    {
+        pickAClassParent.SetActive(!_player.IsReady);
+    }
 }
