@@ -15,7 +15,7 @@ public class Skill : LoadoutSlotElement
     public Skill(SkillData skillData, Player player)
     {
         Owner = player;
-        elementName = skillData.name;
+        elementName = skillData.objectName;
         description = skillData.description;
         sprite = skillData.sprite;
         foreach (var effect in skillData.effects)

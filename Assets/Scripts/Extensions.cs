@@ -13,4 +13,14 @@ public static class Extensions
         return items[Random.Range(0, items.Count - 1)];
     }
 
+    public static MenuOption ContainsKey(this List<KeyValuePair<MenuOption, SlotElement>> list, MenuOption menuOption)
+    {
+        foreach (var kvp in list)
+        {
+            if (kvp.Key == menuOption)
+                return kvp.Key;
+        }
+
+        return null;
+    }
 }

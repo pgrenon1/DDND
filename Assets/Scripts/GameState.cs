@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,6 +39,15 @@ public class GameStateBase : IGameState
     public static readonly GameStateRegistration gameStateRegistration = new GameStateRegistration();
     public static readonly GameStateLoadout gameStateLoadout = new GameStateLoadout();
     public static readonly GameStateBattle gameStateBattle = new GameStateBattle();
+    public static readonly GameStateMap gameStateMap = new GameStateMap();
+
+    protected List<Player> Players
+    {
+        get
+        {
+            return PlayerManager.Instance.Players;
+        }
+    }
 
     public virtual void OnEnter(GameManager gameManager)
     {
@@ -51,7 +61,7 @@ public class GameStateBase : IGameState
 
     public virtual void ToState(GameManager gameManager, GameStateBase targetState)
     {
-        Debug.Log(gameManager.State + " -> " + targetState);
+        Debug.Log(gameManager.State + " -> <b>" + targetState + "</b>");
         gameManager.State.OnExit(gameManager);
         gameManager.State = targetState;
         gameManager.State.OnEnter(gameManager);
@@ -118,22 +128,11 @@ public class GameStateBase : IGameState
 
 public class GameStateRegistration : GameStateBase
 {
-    //public override void OnEnter(GameManager gameManager)
-    //{
-    //    base.OnEnter(gameManager);
-
-    //    foreach (var player in PlayerManager.Instance.Players)
-    //    {
-    //        player.classPickPanel.PlayerClassSlot.SelectFirst();
-    //    }
-    //}
-
     public override void Update(GameManager gameManager)
     {
         base.Update(gameManager);
 
-        var players = PlayerManager.Instance.Players;
-        if (players.Count > 0 && players.TrueForAll(x => x.IsReady))
+        if (Players.Count > 0 && Players.TrueForAll(x => x.IsReady))
         {
             ToState(gameManager, gameStateLoadout);
         }
@@ -161,7 +160,7 @@ public class GameStateRegistration : GameStateBase
     {
         base.OnExit(gameManager);
 
-        foreach (var player in PlayerManager.Instance.Players)
+        foreach (var player in Players)
         {
             var pickedPlayerClassSlotElement = player.classPickPanel.PlayerClassSlot.SelectedSlotElement as PlayerClassSlotElement;
             var pickedPlayerClass = pickedPlayerClassSlotElement.PlayerClass;
@@ -180,18 +179,20 @@ public class GameStateLoadout : GameStateBase
     {
         base.OnEnter(gameManager);
 
-        foreach (var player in PlayerManager.Instance.Players)
+        foreach (var player in Players)
         {
             player.LoadoutPanel.FocusedLoadoutSlotIndex = 0;
             player.LoadoutPanel.FocusedLoadoutSlot.SelectFirst();
         }
+
+        gameManager.SpawnEnemy();
     }
 
     public override void Update(GameManager gameManager)
     {
         base.Update(gameManager);
 
-        if (PlayerManager.Instance.Players.TrueForAll(x => x.IsReady))
+        if (Players.TrueForAll(x => x.IsReady))
         {
             ToState(gameManager, gameStateBattle);
         }
@@ -214,9 +215,69 @@ public class GameStateLoadout : GameStateBase
         else if (direction == Direction.Left || direction == Direction.Right)
             player.LoadoutPanel.SwitchFocus(direction);
     }
+
+    //TEMP
+    public override void OnExit(GameManager gameManager)
+    {
+        base.OnExit(gameManager);
+
+        foreach (var player in Players)
+        {
+            player.LoadoutPanel.loadoutInfoPanel.Hide();
+            player.IsReady = false;
+        }
+    }
+}
+
+public class GameStateMap : GameStateBase
+{
+    public override void OnExit(GameManager gameManager)
+    {
+        base.OnExit(gameManager);
+
+        foreach (var player in Players)
+        {
+            player.LoadoutPanel.loadoutInfoPanel.Hide();
+            player.IsReady = false;
+        }
+    }
 }
 
 public class GameStateBattle : GameStateBase
 {
+    public override void OnEnter(GameManager gameManager)
+    {
+        base.OnEnter(gameManager);
 
+        gameManager.PlaySong();
+    }
+
+    public override void Update(GameManager gameManager)
+    {
+        base.Update(gameManager);
+
+        gameManager.UpdateSong();
+
+        if (!gameManager.MusicSource.isPlaying)
+            ToState(gameManager, gameStateLoadout);
+
+        foreach (var player in Players)
+        {
+            player.Conductor.UpdateNotes();
+        }
+    }
+
+    protected override void DirectionPressed(Player player, Direction direction)
+    {
+        base.DirectionPressed(player, direction);
+
+        player.Conductor.JudgeHit(direction);
+    }
+
+    public override void OnExit(GameManager gameManager)
+    {
+        base.OnExit(gameManager);
+
+        gameManager.DestroyEnemy();
+    }
 }

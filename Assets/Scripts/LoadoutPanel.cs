@@ -11,16 +11,19 @@ public class LoadoutPanel : UIBaseBehaviour
     public MenuOption menuOptionPrefab;
     public Slot loadoutSlotPrefab;
     public Transform slotsParent;
+    public LoadoutInfoPanel loadoutInfoPanel;
 
     public List<KeyValuePair<Slot, SlotType>> LoadoutSlots { get; set; } = new List<KeyValuePair<Slot, SlotType>>();
-    public MenuOption CurrentMenuOption { get; private set; }
     public Player Player { get; set; }
     public int FocusedLoadoutSlotIndex { get; set; }
     public Slot FocusedLoadoutSlot
     {
         get
         {
-            return LoadoutSlots[FocusedLoadoutSlotIndex].Key;
+            if (LoadoutSlots.Count > 0)
+                return LoadoutSlots[FocusedLoadoutSlotIndex].Key;
+            else
+                return null;
         }
     }
 
@@ -35,6 +38,9 @@ public class LoadoutPanel : UIBaseBehaviour
                 slotElement.Key.Toggle.interactable = interactable;
             }
         }
+
+        if (FocusedLoadoutSlot != null && FocusedLoadoutSlot.SelectedSlotElement != null)
+            loadoutInfoPanel.RefreshContent(FocusedLoadoutSlot.SelectedSlotElement);
     }
 
     public void InitLoadoutSlots()

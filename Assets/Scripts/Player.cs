@@ -26,7 +26,6 @@ public class Player : Targetable
     public float scrollSpeed = 0.15f;
 
     public PlayerClass PlayerClass { get; set; }
-    public bool IsDancing { get; set; }
     public Conductor Conductor { get; private set; }
     public LoadoutPanel LoadoutPanel { get; private set; }
     public List<Item> Items { get; set; } = new List<Item>();
@@ -38,9 +37,6 @@ public class Player : Targetable
     public PlayerParent PlayerParent { get; set; }
     public int PlayerLevel { get; set; }
     public MenuOption SelectedMenuOption { get; set; }
-
-    //public delegate void OnSelectionChanged(MenuOption Selected);
-    //public event OnSelectionChanged SelectionChanged;
 
     public float EnergyMax
     {
@@ -63,10 +59,14 @@ public class Player : Targetable
     {
         PlayerClass = playerClass;
 
+        // Loadout
         InitItems();
         InitSkills();
         LoadoutPanel.InitLoadoutSlots();
 
+        // Stats
+        Damageable.maxHealth = playerClass.maxHealth.GetValue(PlayerLevel);
+        Damageable.CurrentHealth = Damageable.maxHealth;
         Energy = EnergyMax;
     }
 
@@ -107,27 +107,13 @@ public class Player : Targetable
         energyFill.fillAmount = Energy / EnergyMax;
     }
 
-    public void StartDancing()
-    {
-        LoadoutPanel.gameObject.SetActive(false);
-
-        Conductor.Play();
-
-        IsDancing = true;
-    }
-
-    //private void DirectionPressed(Direction direction)
+    //public void StartDancing()
     //{
-    //if (IsDancing)
-    //{
-    //    Conductor.JudgeHit(direction);
-    //}
-    //else
-    //{
-    //    PlayerMenu.MoveSelection(direction);
-    //}
+    //    LoadoutPanel.gameObject.SetActive(false);
 
-    //DirectionFeedback(direction);
+    //    Conductor.Play();
+
+    //    IsDancing = true;
     //}
 
     public void DirectionFeedback(Direction direction)
@@ -152,15 +138,6 @@ public class Player : Targetable
                 Debug.LogWarning("Invalid Direction");
                 return null;
         }
-    }
-
-    public void PickLoadout()
-    {
-        //PlayerMenu.InitLoadoutSlots(PlayerClass);
-
-        //PlayerMenu.RefreshLoadout();
-
-        //PlayerMenu.Select(PlayerMenu.LoadoutSlots.First().Key.GetComponent<Selectable>());
     }
 
     public void ActivateSkill(CornerButton button)

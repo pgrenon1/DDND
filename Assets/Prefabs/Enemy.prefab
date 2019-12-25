@@ -92,7 +92,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 1.05
+  m_fontSize: 1
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -109,7 +109,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: -1
+  m_firstOverflowCharacterIndex: 0
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -130,7 +130,7 @@ MonoBehaviour:
   m_firstVisibleCharacter: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_margin: {x: 0, y: 0.5, z: 0, w: 0.5}
   m_textInfo:
     textComponent: {fileID: 1121461351254237040}
     characterCount: 4
@@ -211,8 +211,8 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  songDatas:
-  - {fileID: 11400000, guid: 3052094454941e747a289a03bd857581, type: 2}
+  enemyName: Shakira
+  songData: {fileID: 11400000, guid: 3052094454941e747a289a03bd857581, type: 2}
 --- !u!114 &1121461351279725926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -424,7 +424,6 @@ GameObject:
   - component: {fileID: 1121461352250583229}
   - component: {fileID: 1121461352250583224}
   - component: {fileID: 1121461352250583231}
-  - component: {fileID: 1121461352250583230}
   - component: {fileID: 1057756455982908027}
   m_Layer: 0
   m_Name: HealthBar
@@ -450,8 +449,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0.0376, y: 2.276}
-  m_SizeDelta: {x: 2.0677, y: 1.2519}
+  m_AnchoredPosition: {x: 0.147, y: 2.495}
+  m_SizeDelta: {x: 6.315, y: 1.69}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &1121461352250583224
 Canvas:
@@ -496,23 +495,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
---- !u!114 &1121461352250583230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1121461352250583228}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 55
 --- !u!114 &1057756455982908027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -657,12 +639,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
+  m_Color: {r: 0.49056602, g: 0.31007475, b: 0.31007475, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 513609cd51a4f914b91339d8376049dc, type: 3}
+  m_Sprite: {fileID: 5920714455021888018, guid: 5c2e1ca5d51b8b84889d17733cf330c6,
+    type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1

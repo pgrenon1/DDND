@@ -69,6 +69,12 @@ MonoBehaviour:
     - Name: audioClip
       Entry: 10
       Data: 0
+    - Name: duration
+      Entry: 4
+      Data: 0
+    - Name: lastTimestamp
+      Entry: 4
+      Data: 88.6000061
     - Name: notes
       Entry: 7
       Data: 2|System.Collections.Generic.Dictionary`2[[Difficulty, Assembly-CSharp],[System.Collections.Generic.List`1[[NoteData,

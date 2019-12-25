@@ -28,18 +28,18 @@ public class Note : MonoBehaviour
     {
         get
         {
-            if (Conductor.SongPositionInSeconds >= TimeStamp - Conductor.perfectWindow / 2
-                && Conductor.SongPositionInSeconds <= TimeStamp + Conductor.perfectWindow / 2)
+            if (GameManager.Instance.SongPositionInSeconds >= TimeStamp - GameManager.Instance.perfectWindow / 2
+                && Conductor.SongPositionInSeconds <= TimeStamp + GameManager.Instance.perfectWindow / 2)
             {
                 return Timing.Perfect;
             }
-            else if (Conductor.SongPositionInSeconds >= TimeStamp - Conductor.goodWindow / 2
-                && Conductor.SongPositionInSeconds <= TimeStamp + Conductor.goodWindow / 2)
+            else if (GameManager.Instance.SongPositionInSeconds >= TimeStamp - GameManager.Instance.goodWindow / 2
+                && Conductor.SongPositionInSeconds <= TimeStamp + GameManager.Instance.goodWindow / 2)
             {
                 return Timing.Good;
             }
-            else if (Conductor.SongPositionInSeconds >= TimeStamp - Conductor.okWindow / 2
-                && Conductor.SongPositionInSeconds <= TimeStamp + Conductor.okWindow / 2)
+            else if (GameManager.Instance.SongPositionInSeconds >= TimeStamp - GameManager.Instance.okWindow / 2
+                && Conductor.SongPositionInSeconds <= TimeStamp + GameManager.Instance.okWindow / 2)
             {
                 return Timing.Ok;
             }
@@ -49,33 +49,6 @@ public class Note : MonoBehaviour
             }
         }
     }
-
-    //public bool IsOpen
-    //{
-    //    get
-    //    {
-    //        return Conductor.SongPositionInSeconds >= TimeStamp - Conductor.okWindow / 2
-    //            && Conductor.SongPositionInSeconds <= TimeStamp + Conductor.okWindow / 2;
-    //    }
-    //}
-
-    //public bool IsGood
-    //{
-    //    get
-    //    {
-    //        return Conductor.SongPositionInSeconds >= TimeStamp - Conductor.goodWindow / 2
-    //            && Conductor.SongPositionInSeconds <= TimeStamp + Conductor.goodWindow / 2;
-    //    }
-    //}
-
-    //public bool IsPerfect
-    //{
-    //    get
-    //    {
-    //        return Conductor.SongPositionInSeconds >= TimeStamp - Conductor.perfectWindow / 2
-    //            && Conductor.SongPositionInSeconds <= TimeStamp + Conductor.perfectWindow / 2;
-    //    }
-    //}
 
     public void Travel(Vector3 targetPosition, float timeInAdvance)
     {

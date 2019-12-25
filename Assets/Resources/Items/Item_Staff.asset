@@ -43,6 +43,6 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  objectName: Boarding Axr
+  objectName: Staff
   description: '''Thonk'''
   sprite: {fileID: 21300000, guid: f6178ae36e7dd0b40958d9331de5a403, type: 3}

@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class Enemy : Targetable
 {
-    public List<SongData> songDatas = new List<SongData>();
+    public string enemyName;
+    public SongData songData;
 
-    protected override void Start()
+    public Song Song
     {
-        base.Start();
-
-        GameManager.Instance.SetupSong(songDatas.RandomElement().song);
+        get
+        {
+            return songData.song;
+        }
     }
 }

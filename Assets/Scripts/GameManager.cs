@@ -12,13 +12,52 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     [AssetList(Path = "Resources/PlayerClasses")]
     public List<PlayerClass> playerClasses = new List<PlayerClass>();
     public List<Enemy> enemyPrefabs = new List<Enemy>();
-    public Transform enemyParent;
-    public Transform playerStage;
 
-    public bool SongIsPlaying { get; set; }
-    public Enemy CurrentEnemy { get; set; }
-    public List<Player> Players { get; set; } = new List<Player>();
-    public GameStateBase State;
+    [Header("Settings")]
+    public int beatsInAdvance = 4;
+    public float okWindow = 0.5f;
+    public float goodWindow = 0.3f;
+    public float perfectWindow = 0.15f;
+    public float comboValue = 0.1f;
+    public float noteValueOk = 1f;
+    public float noteValueGood = 1.5f;
+    public float noteValuePerfect = 2f;
+
+    public GameStateBase State { get; set; }
+    public float SongPositionInSeconds { get; private set; }
+    public Enemy CurrentEnemy { get; private set; }
+    public AudioSource MusicSource { get; private set; }
+    public float StartTime { get; private set; }
+
+    private float _audioTimescale = 1f;
+    public float AudioTimescale
+    {
+        set
+        {
+            _audioTimescale = value;
+
+            if (MusicSource != null)
+                MusicSource.pitch = _audioTimescale;
+
+            Time.timeScale = _audioTimescale;
+        }
+    }
+
+    public float TimeInAdvance
+    {
+        get
+        {
+            return beatsInAdvance * 60f / CurrentSong.bpms[_currentBPMIndex].Value;
+        }
+    }
+
+    public List<Player> Players
+    {
+        get
+        {
+            return PlayerManager.Instance.Players;
+        }
+    }
 
     [System.NonSerialized, OdinSerialize, ReadOnly]
     public Song currentSong;
@@ -31,14 +70,14 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         set
         {
             currentSong = value;
-            _musicSource.clip = currentSong.audioClip;
-            _musicSource.time = 0f;
+            MusicSource.clip = currentSong.audioClip;
+            MusicSource.time = 0f;
         }
     }
 
-    private AudioSource _musicSource;
     private SongLoader _songLoader;
-    private Enemy _currentEnemy;
+    private int _currentBPMIndex = 0;
+    private double _lastDspTime;
 
     protected override void Awake()
     {
@@ -46,7 +85,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
         _songLoader = new SongLoader();
 
-        _musicSource = Instantiate(musicSourcePrefab, transform);
+        MusicSource = Instantiate(musicSourcePrefab, transform);
 
         //SpawnEnemy(enemyPrefabs[0]);
     }
@@ -57,34 +96,64 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         State.ToState(this, GameStateBase.gameStateRegistration);
     }
 
-    private void SpawnEnemy(Enemy enemyPrefab)
+    public void SpawnEnemy()
     {
-        var enemy = Instantiate(enemyPrefab, enemyParent.position, Quaternion.identity, enemyParent);
-        enemy.transform.LookAt(playerStage);
-
-        _currentEnemy = enemy;
+        CurrentEnemy = Instantiate(enemyPrefabs.RandomElement()); ;
+        CurrentSong = CurrentEnemy.Song;
     }
 
-    public void StartSong()
+    public void PlaySong()
     {
-        _musicSource.Play();
+        StartTime = (float)AudioSettings.dspTime;
+        _lastDspTime = StartTime;
+        SongPositionInSeconds = 0 + currentSong.offset;
 
-        foreach (var player in Players)
+        MusicSource.Play();
+    }
+
+    public void UpdateSong()
+    {
+        var toAdd = AudioSettings.dspTime - _lastDspTime;
+        SongPositionInSeconds += (float)(toAdd * _audioTimescale);
+        //SongPositionInSeconds = (float)(AudioSettings.dspTime - StartTime + CurrentSong.offset);
+        _lastDspTime = AudioSettings.dspTime;
+
+        if (CurrentSong.bpms.Count > _currentBPMIndex + 1)
         {
-            player.Conductor.Play();
-            player.StartDancing();
+            if (SongPositionInSeconds > CurrentSong.bpms[_currentBPMIndex + 1].Key)
+            {
+                _currentBPMIndex++;
+            }
         }
-
-        SongIsPlaying = true;
     }
 
     private void Update()
     {
         State.Update(this);
+
+        if (Input.GetKeyDown(KeyCode.F1))
+            AudioTimescale = 1f;
+        else if (Input.GetKeyDown(KeyCode.F2))
+            AudioTimescale = 3f;
     }
 
-    public void SetupSong(Song songToPlay)
+    public float GetNoteValue(Timing timing)
     {
-        CurrentSong = songToPlay;
+        switch (timing)
+        {
+            case Timing.Perfect:
+                return noteValuePerfect;
+            case Timing.Good:
+                return noteValueGood;
+            case Timing.Ok:
+                return noteValueOk;
+            default:
+                return 0f;
+        }
+    }
+
+    public void DestroyEnemy()
+    {
+        Destroy(CurrentEnemy);
     }
 }

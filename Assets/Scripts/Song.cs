@@ -1,4 +1,5 @@
 ﻿using Sirenix.Serialization;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ public class Song
     public float displayBpm;
     public string musicPath;
     public AudioClip audioClip;
+    public float duration;
+    public float lastTimestamp;
     [OdinSerialize]
     public Dictionary<Difficulty, List<NoteData>> notes;
 
@@ -44,6 +47,33 @@ public class Song
         this.audioClip = (AudioClip)Resources.Load(musicPath);
         this.displayBpm = displayBpm;
         this.notes = notes;
+
+        GetLastTimeStamp(notes);
+    }
+
+    private void GetLastTimeStamp(Dictionary<Difficulty, List<NoteData>> notes)
+    {
+        foreach (var difficulty in notes)
+        {
+            var timestamp = difficulty.Value[difficulty.Value.Count - 1].timestamp;
+            if (timestamp > lastTimestamp)
+            {
+                lastTimestamp = timestamp;
+            }
+        }
+    }
+
+    public NoteData GetNote(Difficulty currentDifficulty, int noteIndex)
+    {
+        var noteList = notes[currentDifficulty];
+        if (noteList != null)
+        {
+            var noteData = noteList[noteIndex];
+            if (noteData != null)
+                return noteData;
+        }
+
+        return null;
     }
 }
 

@@ -46,7 +46,6 @@ public class Slot : UIBaseBehaviour
 
             Player.SelectedMenuOption = _selectedMenuOption;
             ScrollToSelected();
-
         }
     }
 
@@ -55,45 +54,26 @@ public class Slot : UIBaseBehaviour
         get
         {
             if (SelectedMenuOption != null)
-                return SlotElements[SelectedMenuOption];
+                return SlotElements[_selectedIndex].Value;
             else
                 return null;
         }
     }
 
+    public List<KeyValuePair<MenuOption, SlotElement>> SlotElements { get; set; } = new List<KeyValuePair<MenuOption, SlotElement>>();
 
-    public Dictionary<MenuOption, SlotElement> SlotElements { get; set; } = new Dictionary<MenuOption, SlotElement>();
-
+    private int _selectedIndex;
     private ToggleGroup _toggleGroup;
-    private InfoPanel _infoPanel;
 
     private void Awake()
     {
         _toggleGroup = GetComponent<ToggleGroup>();
     }
 
-    //private void Start()
-    //{
-
-    //    SelectFirst();
-    //}
-
     public T GetPickedSlotElement<T>() where T : SlotElement
     {
         return SelectedSlotElement as T;
     }
-    //private void Start()
-    //{
-    //    Player.SelectionChanged += PlayerMenu_SelectionChanged;
-    //}
-
-    //private void PlayerMenu_SelectionChanged(MenuOption selected)
-    //{
-    //    if (SlotElements.ContainsKey(selected))
-    //    {
-    //        Select(selected.Toggle);
-    //    }
-    //}
 
     public IEnumerable<T> GetSlotElements<T>() where T : SlotElement
     {
@@ -102,28 +82,9 @@ public class Slot : UIBaseBehaviour
                 yield return slotElement.Value as T;
     }
 
-    //private void SetPicked(MenuOption newPicked)
-    //{
-    //    SelectedMenuOption = newPicked;
-    //    ScrollToSelected();
-
-    //    if (_infoPanel != null)
-    //        _infoPanel.RefreshContent(SelectedSlotElement);
-    //}
-
-    private void UpdateInteractable()
-    {
-        //foreach (var menuOption in SlotElements)
-        //{
-        //    menuOption.Key.Toggle.interactable = PlayerMenu.LoadoutSlots[PlayerMenu.FocusedLoadoutSlotIndex].Key == this;
-        //}
-    }
-
     private void Update()
     {
         UpdateArrowsVisibility();
-
-        UpdateInteractable();
     }
 
     private void UpdateArrowsVisibility()
@@ -137,22 +98,22 @@ public class Slot : UIBaseBehaviour
         arrowDown.gameObject.SetActive(showArrows && SelectedMenuOption.transform.GetSiblingIndex() < contentParent.childCount - 1);
     }
 
-    private void RemoveExtraMenuOptions(List<SlotElement> loadoutObjects)
+    private void RemoveExtraMenuOptions(List<SlotElement> slotElements)
     {
-        var menuOptionsToRemove = new List<MenuOption>();
+        var toRemove = new List<KeyValuePair<MenuOption, SlotElement>>();
 
         foreach (var pair in SlotElements)
         {
-            if (!loadoutObjects.Contains(pair.Value))
+            if (!slotElements.Contains(pair.Value))
             {
-                menuOptionsToRemove.Add(pair.Key);
+                toRemove.Add(pair);
             }
         }
 
-        foreach (var menuOption in menuOptionsToRemove)
+        foreach (var kvp in toRemove)
         {
-            Destroy(menuOption);
-            SlotElements.Remove(menuOption);
+            Destroy(kvp.Key);
+            SlotElements.Remove(kvp);
         }
     }
 
@@ -166,14 +127,14 @@ public class Slot : UIBaseBehaviour
                 menuOption.Toggle.group = _toggleGroup;
                 menuOption.mainImage.sprite = slotElement.sprite;
                 menuOption.name = slotElement.GetType().ToString() + slotElement.elementName;
-                SlotElements.Add(menuOption, slotElement);
+                SlotElements.Add(new KeyValuePair<MenuOption, SlotElement>(menuOption, slotElement));
             }
         }
     }
 
     public void SelectFirst()
     {
-        Select(SlotElements.First().Key.Toggle);
+        Select(SlotElements.First().Key);
     }
 
     public void Refresh(List<SlotElement> slotElements)
@@ -209,22 +170,30 @@ public class Slot : UIBaseBehaviour
         switch (direction)
         {
             case Direction.Down:
-                Select(SelectedMenuOption.Toggle.FindSelectableOnDown());
+                _selectedIndex++;
+
+                var maxSlotElements = SlotElements.Count - 1;
+                if (_selectedIndex > maxSlotElements)
+                    _selectedIndex = maxSlotElements;
                 break;
             case Direction.Up:
-                Select(SelectedMenuOption.Toggle.FindSelectableOnUp());
+                _selectedIndex--;
+
+                if (_selectedIndex < 0)
+                    _selectedIndex = 0;
                 break;
         }
+
+        Select(SlotElements[_selectedIndex].Key);
     }
 
-    public void Select(Selectable selectable)
+    public void Select(MenuOption menuOption)
     {
-        if (selectable == null)
+        if (menuOption == null)
             return;
 
-        selectable.Select();
+        menuOption.Select();
 
-        var menuOption = selectable.GetComponent<MenuOption>();
         SelectedMenuOption = menuOption;
     }
 }
