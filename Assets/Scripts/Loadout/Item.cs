@@ -13,7 +13,7 @@ public class Item : LoadoutSlotElement
     public Item(ItemData itemData, Player player)
     {
         Owner = player;
-        elementName = itemData.objectName;
+        slotElementName = itemData.objectName;
         description = itemData.description;
         sprite = itemData.sprite;
         foreach (var itemEffect in itemData.itemEffects)
@@ -23,14 +23,23 @@ public class Item : LoadoutSlotElement
         }
     }
 
-    public override void ScoreNote(float noteScore)
+    public override void ScoreNote(Note note, float noteScore)
     {
-        // Apply Item Effects
+        base.ScoreNote(note, noteScore);
+
         foreach (var itemEffect in itemEffects)
         {
             itemEffect.Apply(noteScore);
         }
     }
+
+    //public void ApplyItemEffects(float noteScore)
+    //{
+    //    foreach (var itemEffect in itemEffects)
+    //    {
+    //        itemEffect.Apply(noteScore);
+    //    }
+    //}
 
     public List<T> GetActiveItemEffectsOfType<T>() where T : LoadoutEffect
     {

@@ -74,6 +74,12 @@ public class GameStateBase : IGameState
 
     public virtual void HandleInputs(Player player)
     {
+        if (!player.IsInit)
+        {
+            player.IsInit = true;
+            return;
+        }
+
         if (player.Actions.Left.WasPressed)
         {
             DirectionPressed(player, Direction.Left);
@@ -168,7 +174,6 @@ public class GameStateRegistration : GameStateBase
             player.InitPlayer(pickedPlayerClass);
 
             player.classPickPanel.Hide();
-            player.IsReady = false;
         }
     }
 }
@@ -181,6 +186,8 @@ public class GameStateLoadout : GameStateBase
 
         foreach (var player in Players)
         {
+            player.IsReady = false;
+            player.LoadoutPanel.loadoutInfoPanel.Show();
             player.LoadoutPanel.FocusedLoadoutSlotIndex = 0;
             player.LoadoutPanel.FocusedLoadoutSlot.SelectFirst();
         }
@@ -249,6 +256,11 @@ public class GameStateBattle : GameStateBase
     {
         base.OnEnter(gameManager);
 
+        foreach (var player in Players)
+        {
+            player.CurrentTarget = gameManager.CurrentEnemy;
+        }
+
         gameManager.PlaySong();
     }
 
@@ -267,6 +279,13 @@ public class GameStateBattle : GameStateBase
         }
     }
 
+    protected override void ButtonPressed(Player player, CornerButton button)
+    {
+        base.ButtonPressed(player, button);
+
+        player.ActivateSkill(button);
+    }
+
     protected override void DirectionPressed(Player player, Direction direction)
     {
         base.DirectionPressed(player, direction);
@@ -278,6 +297,9 @@ public class GameStateBattle : GameStateBase
     {
         base.OnExit(gameManager);
 
-        gameManager.DestroyEnemy();
+        foreach (var player in Players)
+        {
+            player.Conductor.ResetConductor();
+        }
     }
 }

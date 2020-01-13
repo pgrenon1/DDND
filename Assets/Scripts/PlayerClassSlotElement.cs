@@ -11,6 +11,6 @@ public class PlayerClassSlotElement : SlotElement
         PlayerClass = playerClass;
         sprite = playerClass.classIcon;
         //description = playerClass.description;
-        elementName = playerClass.className;
+        slotElementName = playerClass.className;
     }
 }

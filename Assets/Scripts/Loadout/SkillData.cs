@@ -7,6 +7,7 @@ using UnityEngine;
 [ShowOdinSerializedPropertiesInInspector, CreateAssetMenu(fileName = "Skill_", menuName = "Skill")]
 public class SkillData : LoadoutObjectData
 {
+    public GameObject noteVFX;
     public int noteCount = 10;
     [System.NonSerialized, OdinSerialize]
     public List<LoadoutEffect> effects = new List<LoadoutEffect>();

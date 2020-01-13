@@ -1347,13 +1347,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5a99e5a4bb8c06e458eb35f3c1181724, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  leftNote: {fileID: 5034899757251152279, guid: 45e2a2e9442395b428f7494cad9cd005,
+  notePrefab: {fileID: 5806713645145995884, guid: 57c32ff0dc156174687a2a687e45357b,
     type: 3}
-  upNote: {fileID: 5034899757251152279, guid: eb36c606f63523e45a01a762b84876ac, type: 3}
-  downNote: {fileID: 5034899757251152279, guid: 9d494578bfca0fd4badfd20c65180f77,
-    type: 3}
-  rightNote: {fileID: 5034899757251152279, guid: 4583662c352cb3c4e8376f91749db6a8,
-    type: 3}
+  rotationLeft: -90
+  rotationUp: 180
+  rotationDown: 0
+  rotationRight: 90
   leftOrigin: {fileID: 3720186617241671217}
   upOrigin: {fileID: 3720186618279578837}
   downOrigin: {fileID: 3720186618467943551}

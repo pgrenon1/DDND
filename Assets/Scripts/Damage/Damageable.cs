@@ -12,6 +12,9 @@ public class Damageable : MonoBehaviour
     public TextMeshProUGUI maxHealthText;
     public Image healthBarFill;
 
+    public delegate void OnDeath(Damageable damageable, Damage damage);
+    public event OnDeath OnDamageableDeath;
+
     public float CurrentHealth { get; set; }
 
     private void Start()
@@ -33,10 +36,22 @@ public class Damageable : MonoBehaviour
 
         foreach (var typedDamage in damage.DamageData.typedDamages)
         {
-            CurrentHealth -= typedDamage.scalableValue.GetValue(damage.ScalingFactor);
+            var damageAmount = typedDamage.scalableValue.GetValue(damage.ScalingFactor);
+            CurrentHealth = Mathf.Max(0, CurrentHealth - damageAmount);
+        }
+
+        if (CurrentHealth <= 0)
+        {
+            Die(damage);
         }
 
         return healthBefore - CurrentHealth > 0f;
+    }
+
+    private void Die(Damage damage)
+    {
+        if (OnDamageableDeath != null)
+            OnDamageableDeath(this, damage);
     }
 
     public bool TryHeal(float healAmount)

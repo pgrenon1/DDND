@@ -9,10 +9,12 @@ using UnityEngine.UI;
 public class Conductor : MonoBehaviour
 {
     [Header("Prefabs")]
-    public Note leftNote;
-    public Note upNote;
-    public Note downNote;
-    public Note rightNote;
+    public Note notePrefab;
+    [Space]
+    public float rotationLeft = -90f;
+    public float rotationUp = 180f;
+    public float rotationDown = 0f;
+    public float rotationRight = 90f;
 
     [Header("Scene")]
     public RectTransform leftOrigin;
@@ -29,6 +31,7 @@ public class Conductor : MonoBehaviour
     public bool canChangeDifficulty = false;
 
     public List<Note> ActiveNotes { get; private set; } = new List<Note>();
+    public Player Player { get; set; }
 
     private Difficulty _previousDifficulty;
     public Difficulty _currentDifficulty;
@@ -50,15 +53,6 @@ public class Conductor : MonoBehaviour
         }
     }
 
-    public Song CurrentSong
-    {
-        get
-        {
-            return GameManager.Instance.CurrentSong;
-        }
-    }
-
-    public Player Player { get; set; }
     public float SongPositionInSeconds
     {
         get
@@ -73,39 +67,49 @@ public class Conductor : MonoBehaviour
     private int _nextNoteIndex = 0;
     private NoteData _nextNote;
 
-    //private void Update()
-    //{
-    //    UpdateCheats();
-
-    //    UpdateNoteSpawning();
-
-    //    UpdateNoteColors();
-    //}
-
     private void UpdateCheats()
     {
         if (!canChangeDifficulty)
             return;
 
-        if (Input.GetKeyDown(KeyCode.Alpha1) && CurrentSong.HasDifficulty(Difficulty.Beginner))
+        var currentSong = GameManager.Instance.CurrentSong;
+
+        if (Input.GetKeyDown(KeyCode.Alpha1) && currentSong.HasDifficulty(Difficulty.Beginner))
             CurrentDifficulty = Difficulty.Beginner;
-        if (Input.GetKeyDown(KeyCode.Alpha2) && CurrentSong.HasDifficulty(Difficulty.Easy))
+        if (Input.GetKeyDown(KeyCode.Alpha2) && currentSong.HasDifficulty(Difficulty.Easy))
             CurrentDifficulty = Difficulty.Easy;
-        if (Input.GetKeyDown(KeyCode.Alpha3) && CurrentSong.HasDifficulty(Difficulty.Medium))
+        if (Input.GetKeyDown(KeyCode.Alpha3) && currentSong.HasDifficulty(Difficulty.Medium))
             CurrentDifficulty = Difficulty.Medium;
-        if (Input.GetKeyDown(KeyCode.Alpha4) && CurrentSong.HasDifficulty(Difficulty.Hard))
+        if (Input.GetKeyDown(KeyCode.Alpha4) && currentSong.HasDifficulty(Difficulty.Hard))
             CurrentDifficulty = Difficulty.Hard;
-        if (Input.GetKeyDown(KeyCode.Alpha5) && CurrentSong.HasDifficulty(Difficulty.Challenge))
+        if (Input.GetKeyDown(KeyCode.Alpha5) && currentSong.HasDifficulty(Difficulty.Challenge))
             CurrentDifficulty = Difficulty.Hard;
+    }
+
+    public void ResetConductor()
+    {
+        _nextNoteIndex = 0;
+        _currentComboScore = 0;
+        _score = 0;
+        _nextNote = null;
+
+        foreach (var note in ActiveNotes)
+        {
+            Destroy(note.gameObject);
+        }
+
+        ActiveNotes.Clear();
     }
 
     private void ChangeDifficulty()
     {
-        foreach (var noteData in CurrentSong.notes[CurrentDifficulty])
+        var currentSong = GameManager.Instance.CurrentSong;
+
+        foreach (var noteData in currentSong.notes[CurrentDifficulty])
         {
             if (noteData.timestamp > SongPositionInSeconds + GameManager.Instance.TimeInAdvance)
             {
-                _nextNoteIndex = CurrentSong.notes[CurrentDifficulty].IndexOf(noteData);
+                _nextNoteIndex = currentSong.notes[CurrentDifficulty].IndexOf(noteData);
                 _nextNote = noteData;
                 break;
             }
@@ -114,7 +118,7 @@ public class Conductor : MonoBehaviour
 
     public void UpdateNotes()
     {
-        _nextNote = CurrentSong.notes[CurrentDifficulty][_nextNoteIndex];
+        _nextNote = GameManager.Instance.CurrentSong.notes[CurrentDifficulty][_nextNoteIndex];
 
         if (SongPositionInSeconds + GameManager.Instance.TimeInAdvance >= _nextNote.timestamp)
         {
@@ -125,7 +129,7 @@ public class Conductor : MonoBehaviour
 
             _nextNoteIndex++;
 
-            var noteData = CurrentSong.GetNote(CurrentDifficulty, _nextNoteIndex);
+            var noteData = GameManager.Instance.CurrentSong.GetNote(CurrentDifficulty, _nextNoteIndex);
 
             _nextNote = noteData;
         }
@@ -137,15 +141,15 @@ public class Conductor : MonoBehaviour
         {
             if (note != null && note.Image != null)
             {
-                if (note.Timing == Timing.Perfect)
+                if (note.GetTiming() == Timing.Perfect)
                 {
                     note.Image.color = Color.blue;
                 }
-                else if (note.Timing == Timing.Good)
+                else if (note.GetTiming() == Timing.Good)
                 {
                     note.Image.color = Color.green;
                 }
-                else if (note.Timing == Timing.Ok)
+                else if (note.GetTiming() == Timing.Ok)
                 {
                     note.Image.color = Color.yellow;
                 }
@@ -164,8 +168,11 @@ public class Conductor : MonoBehaviour
             if (note.Direction != direction)
                 continue;
 
-            if (TryScoreNote(note))
+            var noteScore = note.Score(_currentComboCount);
+
+            if (noteScore > 0f)
             {
+                note.ApplyEffects(noteScore);
                 _currentComboCount++;
                 noteToDelete = note;
                 break;
@@ -186,31 +193,6 @@ public class Conductor : MonoBehaviour
         }
     }
 
-    private bool TryScoreNote(Note note)
-    {
-        bool noteScored = false;
-
-        var noteScore = GameManager.Instance.GetNoteValue(note.Timing) * (1 + _currentComboCount * GameManager.Instance.comboValue);
-
-        if (noteScore > 0f)
-        {
-            noteScored = true;
-
-            ApplyNoteEffects(noteScore);
-        }
-
-        return noteScored;
-    }
-
-    private void ApplyNoteEffects(float noteScore)
-    {
-        var loadoutSlots = Player.LoadoutPanel.LoadoutSlots;
-        foreach (var kvp in loadoutSlots)
-        {
-            kvp.Key.GetPickedSlotElement<LoadoutSlotElement>();
-        }
-    }
-
     private void SpawnNote(NoteData noteData)
     {
         if (noteData == null || noteData.IsEmpty)
@@ -220,34 +202,40 @@ public class Conductor : MonoBehaviour
         {
             if (noteData.Chars[i] != '0' && noteData.Chars[i] != '3')
             {
-                var spawnPosition = GetOriginPosition((Direction)i);
-                var judgmentPosition = GetJudgmentPosition((Direction)i);
-                var notePrefab = GetNotePrefab((Direction)i);
+                var direction = (Direction)i;
+                var spawnPosition = GetOriginPosition(direction);
+                var judgmentPosition = GetJudgmentPosition(direction);
+                var noteRotation = GetNoteRotation(direction);
 
                 var note = Instantiate(notePrefab, spawnPosition, Quaternion.identity, transform);
+                note.transform.Rotate(0f, 0f, noteRotation);
                 note.TimeStamp = noteData.timestamp;
                 note.Conductor = this;
-                note.Direction = (Direction)i;
+                note.Direction = direction;
                 note.Travel(judgmentPosition, GameManager.Instance.TimeInAdvance);
                 ActiveNotes.Add(note);
+
+                if (Player.ActiveSkill != null && Player.ActiveSkill.ActiveNotes.Count < Player.ActiveSkill.noteCount)
+                {
+                    note.Skill = Player.ActiveSkill;
+                    Player.ActiveSkill.ActiveNotes.Add(note);
+                }
             }
         }
     }
 
-    private Note GetNotePrefab(Direction direction)
+    private float GetNoteRotation(Direction direction)
     {
         switch (direction)
         {
             case Direction.Left:
-                return leftNote;
+                return rotationLeft;
             case Direction.Right:
-                return rightNote;
+                return rotationRight;
             case Direction.Up:
-                return upNote;
-            case Direction.Down:
-                return downNote;
+                return rotationUp;
             default:
-                return null;
+                return rotationDown;
         }
     }
 

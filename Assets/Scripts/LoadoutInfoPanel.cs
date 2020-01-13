@@ -14,7 +14,7 @@ public class LoadoutInfoPanel : UIBaseBehaviour
     public void RefreshContent(SlotElement loadoutSlotElement)
     {
         image.sprite = loadoutSlotElement.sprite;
-        title.text = loadoutSlotElement.elementName;
+        title.text = loadoutSlotElement.slotElementName;
         category.text = loadoutSlotElement.GetType().ToString();
         description.text = loadoutSlotElement.description;
 

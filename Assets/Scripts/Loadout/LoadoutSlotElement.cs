@@ -8,7 +8,7 @@ public class LoadoutSlotElement : SlotElement
 {
     public Player Owner { get; set; }
 
-    public virtual void ScoreNote(float noteScore)
+    public virtual void ScoreNote(Note note, float noteScore)
     {
 
     }

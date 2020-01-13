@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,34 +20,51 @@ public class Note : MonoBehaviour
     public Direction Direction { get; set; }
     public Image Image { get; set; }
 
+    private Skill _skill;
+    public Skill Skill
+    {
+        get
+        {
+            return _skill;
+        }
+        set
+        {
+            _skill = value;
+
+            if (_skill != null)
+            {
+                var noteEffect = Instantiate(_skill.noteVFX, transform);
+            }
+        }
+    }
+
+    private int _skillIndex;
+
     private void Start()
     {
         Image = GetComponent<Image>();
     }
 
-    public Timing Timing
+    public Timing GetTiming()
     {
-        get
+        if (GameManager.Instance.SongPositionInSeconds >= TimeStamp - GameManager.Instance.perfectWindow / 2
+            && Conductor.SongPositionInSeconds <= TimeStamp + GameManager.Instance.perfectWindow / 2)
         {
-            if (GameManager.Instance.SongPositionInSeconds >= TimeStamp - GameManager.Instance.perfectWindow / 2
-                && Conductor.SongPositionInSeconds <= TimeStamp + GameManager.Instance.perfectWindow / 2)
-            {
-                return Timing.Perfect;
-            }
-            else if (GameManager.Instance.SongPositionInSeconds >= TimeStamp - GameManager.Instance.goodWindow / 2
-                && Conductor.SongPositionInSeconds <= TimeStamp + GameManager.Instance.goodWindow / 2)
-            {
-                return Timing.Good;
-            }
-            else if (GameManager.Instance.SongPositionInSeconds >= TimeStamp - GameManager.Instance.okWindow / 2
-                && Conductor.SongPositionInSeconds <= TimeStamp + GameManager.Instance.okWindow / 2)
-            {
-                return Timing.Ok;
-            }
-            else
-            {
-                return Timing.Bad;
-            }
+            return Timing.Perfect;
+        }
+        else if (GameManager.Instance.SongPositionInSeconds >= TimeStamp - GameManager.Instance.goodWindow / 2
+            && Conductor.SongPositionInSeconds <= TimeStamp + GameManager.Instance.goodWindow / 2)
+        {
+            return Timing.Good;
+        }
+        else if (GameManager.Instance.SongPositionInSeconds >= TimeStamp - GameManager.Instance.okWindow / 2
+            && Conductor.SongPositionInSeconds <= TimeStamp + GameManager.Instance.okWindow / 2)
+        {
+            return Timing.Ok;
+        }
+        else
+        {
+            return Timing.Bad;
         }
     }
 
@@ -64,6 +82,25 @@ public class Note : MonoBehaviour
             Conductor.ActiveNotes.Remove(this);
         }
 
+        if (Conductor.Player.ActiveSkill != null && Conductor.Player.ActiveSkill.ActiveNotes.Contains(this))
+        {
+            Conductor.Player.ActiveSkill.UpdateSkillProgress(this);
+        }
+
         Destroy(gameObject);
+    }
+
+    public float Score(int currentComboCount)
+    {
+        return GameManager.Instance.GetNoteValue(GetTiming()) + (1 + currentComboCount * GameManager.Instance.comboValue);
+    }
+
+    public void ApplyEffects(float noteScore)
+    {
+        foreach (var loadoutSlot in Conductor.Player.LoadoutPanel.LoadoutSlots)
+        {
+            var slotElement = loadoutSlot.Key.GetPickedSlotElement<LoadoutSlotElement>();
+            slotElement.ScoreNote(this, noteScore);
+        }
     }
 }

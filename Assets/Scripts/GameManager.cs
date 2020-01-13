@@ -60,7 +60,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
 
     [System.NonSerialized, OdinSerialize, ReadOnly]
-    public Song currentSong;
+    private Song currentSong;
     public Song CurrentSong
     {
         get
@@ -98,7 +98,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
 
     public void SpawnEnemy()
     {
-        CurrentEnemy = Instantiate(enemyPrefabs.RandomElement()); ;
+        CurrentEnemy = Instantiate(enemyPrefabs.RandomElement());
         CurrentSong = CurrentEnemy.Song;
     }
 
@@ -134,6 +134,8 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         if (Input.GetKeyDown(KeyCode.F1))
             AudioTimescale = 1f;
         else if (Input.GetKeyDown(KeyCode.F2))
+            AudioTimescale = 2f;
+        else if (Input.GetKeyDown(KeyCode.F3))
             AudioTimescale = 3f;
     }
 
@@ -152,8 +154,12 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         }
     }
 
-    public void DestroyEnemy()
+    public void EndBattle()
     {
-        Destroy(CurrentEnemy);
+        CurrentEnemy = null;
+
+        MusicSource.Stop();
+
+        State.ToState(this, GameStateBase.gameStateLoadout);
     }
 }

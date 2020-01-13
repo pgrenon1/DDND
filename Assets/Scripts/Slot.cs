@@ -126,7 +126,7 @@ public class Slot : UIBaseBehaviour
                 var menuOption = Instantiate(Player.menuOptionPrefab, contentParent);
                 menuOption.Toggle.group = _toggleGroup;
                 menuOption.mainImage.sprite = slotElement.sprite;
-                menuOption.name = slotElement.GetType().ToString() + slotElement.elementName;
+                menuOption.name = slotElement.GetType().ToString() + slotElement.slotElementName;
                 SlotElements.Add(new KeyValuePair<MenuOption, SlotElement>(menuOption, slotElement));
             }
         }

@@ -20,7 +20,9 @@ public class DamageLoadoutEffect : LoadoutEffect
     {
         base.Apply(scalingFactor);
 
-        LoadoutObject.Owner.CurrentTarget.Damageable.TryDamage(new Damage(damageData, LoadoutObject.Owner, scalingFactor));
+        var target = LoadoutObject.Owner.CurrentTarget;
+        var damageable = target.Damageable;
+        damageable.TryDamage(new Damage(damageData, LoadoutObject.Owner, scalingFactor));
     }
 }
 

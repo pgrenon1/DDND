@@ -66,7 +66,7 @@ public class Song
     public NoteData GetNote(Difficulty currentDifficulty, int noteIndex)
     {
         var noteList = notes[currentDifficulty];
-        if (noteList != null)
+        if (noteList != null && noteIndex < noteList.Count - 1)
         {
             var noteData = noteList[noteIndex];
             if (noteData != null)

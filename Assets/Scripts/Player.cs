@@ -25,6 +25,8 @@ public class Player : Targetable
     public MenuOption menuOptionPrefab;
     public float scrollSpeed = 0.15f;
 
+    public Skill ActiveSkill { get; set; }
+    public bool IsInit { get; set; }
     public PlayerClass PlayerClass { get; set; }
     public Conductor Conductor { get; private set; }
     public LoadoutPanel LoadoutPanel { get; private set; }
@@ -107,15 +109,6 @@ public class Player : Targetable
         energyFill.fillAmount = Energy / EnergyMax;
     }
 
-    //public void StartDancing()
-    //{
-    //    LoadoutPanel.gameObject.SetActive(false);
-
-    //    Conductor.Play();
-
-    //    IsDancing = true;
-    //}
-
     public void DirectionFeedback(Direction direction)
     {
         var arrow = GetArrowFromDirection(direction);
@@ -135,14 +128,15 @@ public class Player : Targetable
             case Direction.Right:
                 return rightArrow;
             default:
-                Debug.LogWarning("Invalid Direction");
+                Debug.LogWarning("Invalid Direction, WTF");
                 return null;
         }
     }
 
     public void ActivateSkill(CornerButton button)
     {
-        var loadoutSlotElement = GetLoadoutSlotElement(button);
+        var loadoutSlot = LoadoutPanel.LoadoutSlots[(int)button].Key;
+        var slotElement = loadoutSlot.SelectedSlotElement;
 
         //var item = loadoutSlotElement as Item;
         //if (item != null)
@@ -150,14 +144,29 @@ public class Player : Targetable
         //    //"Activate" item?
         //}
 
-        var skill = loadoutSlotElement as Skill;
-        if (skill != null)
+        var skill = slotElement as Skill;
+        if (skill != null && ActiveSkill == null)
         {
             skill.Activate();
+            ActiveSkill = skill;
         }
     }
 
-    private LoadoutSlotElement GetLoadoutSlotElement(CornerButton button)
+    //private bool HasActiveSkill()
+    //{
+    //    foreach (var slot in LoadoutPanel.LoadoutSlots)
+    //    {
+    //        var skill = slot.Key.SelectedSlotElement as Skill;
+    //        if (skill != null && skill.IsActive)
+    //        {
+    //            return true;
+    //        }
+    //    }
+
+    //    return false;
+    //}
+
+    private LoadoutSlotElement GetLoadoutSlotElementFromButton(CornerButton button)
     {
         var slot = LoadoutPanel.LoadoutSlots[(int)button];
         return slot.Key.GetPickedSlotElement<Skill>();
