@@ -12,8 +12,16 @@ public class Skill : LoadoutSlotElement
 
     public bool IsActive { get; set; }
     public float Score { get; private set; }
+    public float MaxTimingPoint
+    {
+        get
+        {
+            return noteCount * GameManager.Instance.timingValues[Timing.Perfect];
+        }
+    }
 
     public List<Note> ActiveNotes = new List<Note>();
+    public List<Timing> Timings = new List<Timing>();
 
     public Skill(SkillData skillData, Player player)
     {
@@ -38,14 +46,23 @@ public class Skill : LoadoutSlotElement
 
         foreach (var note in Owner.Conductor.ActiveNotes)
         {
-            ActiveNotes.Add(note);
+            RegisterNote(note);
         }
 
         Debug.Log("Activating " + this.slotElementName);
     }
 
+    public void RegisterNote(Note note)
+    {
+        ActiveNotes.Add(note);
+        UnityEngine.Object.Instantiate(noteVFX, note.transform);
+    }
+
     public override void ScoreNote(Note note, float noteScore)
     {
+        if (!IsActive)
+            return;
+
         base.ScoreNote(note, noteScore);
 
         Score += noteScore;
@@ -53,14 +70,15 @@ public class Skill : LoadoutSlotElement
         UpdateSkillProgress(note);
     }
 
-    BAD: notes are removed and added infinetly.
-        need to check that notes are only added until 10 are added, Not until the count of activenote reach the notecount!
+    //    BAD: notes are removed and added infinetly.
+    //    need to check that notes are only added until 10 are added, Not until the count of activenote reach the notecount!
     public void UpdateSkillProgress(Note note)
     {
-        if (ActiveNotes.Contains(note))
-            ActiveNotes.Remove(note);
+        ActiveNotes[ActiveNotes.IndexOf(note)] = null;
 
-        if (ActiveNotes.Count == 0)
+        Timings.Add(note.EvaluateNote());
+
+        if (ActiveNotes.Count == noteCount && ActiveNotes.TrueForAll(n => n == null))
             Resolve();
     }
 
@@ -68,11 +86,18 @@ public class Skill : LoadoutSlotElement
     {
         Debug.Log("Resolving " + this.slotElementName);
 
-        foreach (var effect in effects)
+        var totalTimingPoints = 0f;
+        foreach (var timing in Timings)
         {
-            effect.Apply(Score);
+            totalTimingPoints += GameManager.Instance.GetTimingValue(timing);
         }
 
+        foreach (var effect in effects)
+        {
+            effect.Apply(totalTimingPoints / MaxTimingPoint);
+        }
+
+        ActiveNotes.Clear();
         IsActive = false;
         Owner.ActiveSkill = null;
     }

@@ -141,15 +141,15 @@ public class Conductor : MonoBehaviour
         {
             if (note != null && note.Image != null)
             {
-                if (note.GetTiming() == Timing.Perfect)
+                if (note.EvaluateNote() == Timing.Perfect)
                 {
                     note.Image.color = Color.blue;
                 }
-                else if (note.GetTiming() == Timing.Good)
+                else if (note.EvaluateNote() == Timing.Good)
                 {
                     note.Image.color = Color.green;
                 }
-                else if (note.GetTiming() == Timing.Ok)
+                else if (note.EvaluateNote() == Timing.Ok)
                 {
                     note.Image.color = Color.yellow;
                 }
@@ -217,8 +217,7 @@ public class Conductor : MonoBehaviour
 
                 if (Player.ActiveSkill != null && Player.ActiveSkill.ActiveNotes.Count < Player.ActiveSkill.noteCount)
                 {
-                    note.Skill = Player.ActiveSkill;
-                    Player.ActiveSkill.ActiveNotes.Add(note);
+                    Player.ActiveSkill.RegisterNote(note);
                 }
             }
         }

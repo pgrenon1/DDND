@@ -6,22 +6,33 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ShowOdinSerializedPropertiesInInspector]
-public class GameManager : SingletonMonoBehaviour<GameManager>
+public class GameManager : SingletonMonoBehaviour<GameManager>, ISerializationCallbackReceiver, ISupportsPrefabSerialization
 {
+    [SerializeField, HideInInspector]
+    private SerializationData serializationData;
+
+    SerializationData ISupportsPrefabSerialization.SerializationData { get { return this.serializationData; } set { this.serializationData = value; } }
+
+    void ISerializationCallbackReceiver.OnAfterDeserialize()
+    {
+        UnitySerializationUtility.DeserializeUnityObject(this, ref this.serializationData);
+    }
+
+    void ISerializationCallbackReceiver.OnBeforeSerialize()
+    {
+        UnitySerializationUtility.SerializeUnityObject(this, ref this.serializationData);
+    }
+
     public AudioSource musicSourcePrefab;
     [AssetList(Path = "Resources/PlayerClasses")]
     public List<PlayerClass> playerClasses = new List<PlayerClass>();
     public List<Enemy> enemyPrefabs = new List<Enemy>();
 
     [Header("Settings")]
+    public Dictionary<Timing, float> timingWindows = new Dictionary<Timing, float>();
+    public Dictionary<Timing, float> timingValues = new Dictionary<Timing, float>();
     public int beatsInAdvance = 4;
-    public float okWindow = 0.5f;
-    public float goodWindow = 0.3f;
-    public float perfectWindow = 0.15f;
     public float comboValue = 0.1f;
-    public float noteValueOk = 1f;
-    public float noteValueGood = 1.5f;
-    public float noteValuePerfect = 2f;
 
     public GameStateBase State { get; set; }
     public float SongPositionInSeconds { get; private set; }
@@ -60,17 +71,17 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     }
 
     [System.NonSerialized, OdinSerialize, ReadOnly]
-    private Song currentSong;
+    private Song _currentSong;
     public Song CurrentSong
     {
         get
         {
-            return currentSong;
+            return _currentSong;
         }
         set
         {
-            currentSong = value;
-            MusicSource.clip = currentSong.audioClip;
+            _currentSong = value;
+            MusicSource.clip = _currentSong.audioClip;
             MusicSource.time = 0f;
         }
     }
@@ -86,8 +97,11 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
         _songLoader = new SongLoader();
 
         MusicSource = Instantiate(musicSourcePrefab, transform);
+    }
 
-        //SpawnEnemy(enemyPrefabs[0]);
+    public float GetTimingValue(Timing timing)
+    {
+        return timingValues[timing];
     }
 
     private void Start()
@@ -106,7 +120,7 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
     {
         StartTime = (float)AudioSettings.dspTime;
         _lastDspTime = StartTime;
-        SongPositionInSeconds = 0 + currentSong.offset;
+        SongPositionInSeconds = 0 + _currentSong.offset;
 
         MusicSource.Play();
     }
@@ -137,21 +151,6 @@ public class GameManager : SingletonMonoBehaviour<GameManager>
             AudioTimescale = 2f;
         else if (Input.GetKeyDown(KeyCode.F3))
             AudioTimescale = 3f;
-    }
-
-    public float GetNoteValue(Timing timing)
-    {
-        switch (timing)
-        {
-            case Timing.Perfect:
-                return noteValuePerfect;
-            case Timing.Good:
-                return noteValueGood;
-            case Timing.Ok:
-                return noteValueOk;
-            default:
-                return 0f;
-        }
     }
 
     public void EndBattle()

@@ -38,12 +38,14 @@ public class Damageable : MonoBehaviour
         {
             var damageAmount = typedDamage.scalableValue.GetValue(damage.ScalingFactor);
             CurrentHealth = Mathf.Max(0, CurrentHealth - damageAmount);
+            Debug.Log(damage.Source + " deals " + damageAmount + " " + typedDamage.damageType + " damage!");
         }
 
         if (CurrentHealth <= 0)
         {
             Die(damage);
         }
+
 
         return healthBefore - CurrentHealth > 0f;
     }

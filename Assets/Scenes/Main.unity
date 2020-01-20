@@ -154,7 +154,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 600, y: -124.99998}
+  m_AnchoredPosition: {x: 600, y: -124.99997}
   m_SizeDelta: {x: 400, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &45978085
@@ -1158,7 +1158,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 200, y: -125.00002}
+  m_AnchoredPosition: {x: 200, y: -125.00003}
   m_SizeDelta: {x: 400, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &883333833
@@ -1598,8 +1598,8 @@ Camera:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.26726595, g: 0.49718663, b: 0.8584906, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -2231,8 +2231,8 @@ Canvas:
   m_GameObject: {fileID: 1308663559}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 963194227}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -2349,6 +2349,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1413868087}
   - component: {fileID: 1413868088}
+  - component: {fileID: 1413868090}
   m_Layer: 5
   m_Name: Map
   m_TagString: Untagged
@@ -2387,6 +2388,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b1b5297bb1b8f645a98ca46b2e28dcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  width: 5
+  height: 10
+  nodePrefab: {fileID: 7817172214387811056, guid: 1b857c549a7595a459d2f65265d9435f,
+    type: 3}
+  edgePrefab: {fileID: 5465868043969600478, guid: 8339ea8421827194a8c60bb0cf490069,
+    type: 3}
+  maxConnections: 2
+  maxRowsSkipped: 1
+  noisePower: 35
+--- !u!222 &1413868090
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1413868086}
+  m_CullTransparentMesh: 0
 --- !u!1 &1414727255
 GameObject:
   m_ObjectHideFlags: 0
@@ -2571,6 +2589,144 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c568960e375246547acd0533e69906eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: timingWindows
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[Timing, Assembly-CSharp],[System.Single,
+        mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[Timing, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 3
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 4
+      Data: 0.5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 4
+      Data: 0.3
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 3
+    - Name: $v
+      Entry: 4
+      Data: 0.15
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: timingValues
+      Entry: 7
+      Data: 2|System.Collections.Generic.Dictionary`2[[Timing, Assembly-CSharp],[System.Single,
+        mscorlib]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 1
+    - Name: 
+      Entry: 12
+      Data: 4
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 4
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 4
+      Data: 0.5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 4
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 3
+    - Name: $v
+      Entry: 4
+      Data: 1.5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: _currentSong
+      Entry: 6
+      Data: 
   musicSourcePrefab: {fileID: 896297858689920230, guid: 414ffd11f21e36542b154aa36a67d2fb,
     type: 3}
   playerClasses:
@@ -2579,13 +2735,7 @@ MonoBehaviour:
   enemyPrefabs:
   - {fileID: 1121461351279725925, guid: 2e0446dd71bba6f4d9717ce77f4b365a, type: 3}
   beatsInAdvance: 4
-  okWindow: 0.5
-  goodWindow: 0.3
-  perfectWindow: 0.15
   comboValue: 0.1
-  noteValueOk: 1
-  noteValueGood: 1
-  noteValuePerfect: 1
 --- !u!4 &1544747052
 Transform:
   m_ObjectHideFlags: 0

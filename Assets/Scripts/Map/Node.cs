@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class Node : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public List<Edge> OutEdges = new List<Edge>();
+    public List<Edge> InEdges = new List<Edge>();
+    //public List<Node> ConnectedNodes
+    //{
+    //    get
+    //    {
+    //        var connected = new List<Node>();
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    //        foreach (var edge in OutEdges)
+    //        {
+    //            if (edge.NodeA != this)
+    //                connected.Add(edge.NodeA);
+    //            else
+    //                connected.Add(edge.NodeB);
+    //        }
+
+    //        return connected;
+    //    }
+    //}
 }
