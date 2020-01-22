@@ -8,7 +8,9 @@ public class Map : BaseBehaviour
     public Node nodePrefab;
     public Edge edgePrefab;
     public int maxConnections = 2;
-    public int maxRowsSkipped = 1;
+    public int maxPathRange = 2;
+    public int minNodesPerRow = 0;
+    public int maxNodesPerRow = 3;
     public float noisePower = 25;
 
     public List<List<Node>> nodeRows = new List<List<Node>>();
@@ -37,24 +39,26 @@ public class Map : BaseBehaviour
             nodeRows.Add(new List<Node>());
             var yPos = y * yIncrement - halfHeight + yIncrement / 2;
 
-            for (int x = 0; x < width; x++)
+            if (y == 0)
             {
-                var xPos = x * xIncrement - halfWidth + xIncrement / 2f;
+                CreateNode(width / 2, y, 0, yPos);
+                continue;
+            }
 
-                if (y == 0)
-                {
-                    if (x == width / 2)
-                    {
-                        CreateNode(x, y, xPos, yPos);
-                    }
+            var numberOfNodeOnThisRow = Random.Range(minNodesPerRow, maxNodesPerRow);
 
-                    continue;
-                }
+            var positions = new List<int>();
+            for (int i = 0; i < width; i++)
+            {
+                positions.Add(i);
+            }
 
-                if (Random.Range(0f, 1f) >= 0.5f)
-                {
-                    CreateNode(x, y, xPos, yPos);
-                }
+            for (int i = 0; i <= numberOfNodeOnThisRow; i++)
+            {
+                var xIndex = positions.RandomElement(true);
+                var xPos = xIndex * xIncrement - halfWidth + xIncrement / 2f;
+
+                CreateNode(xIndex, y, xPos, yPos);
             }
         }
     }
@@ -63,34 +67,45 @@ public class Map : BaseBehaviour
     {
         for (int i = 0; i < nodeRows.Count; i++)
         {
-            var nodeRow = nodeRows[i];
+            var row = nodeRows[i];
 
-            if (i >= nodeRows.Count - 1)
-                break;
+            var potentialConnections = GetNodesFromAdjacentRows(i, maxPathRange);
 
-            for (int j = 0; j < nodeRow.Count; j++)
+            for (int j = 0; j < row.Count; j++)
             {
-                var node = nodeRow[j];
+                var node = row[j];
 
-                var numberOfConnections = Random.Range(1, 3);
-                var potentialConnections = GetNodesFromAdjacentRows(i, maxRowsSkipped + 1);
-
-                potentialConnections.Sort(delegate (Node a, Node b)
+                if (i < nodeRows.Count - 1)
                 {
-                    return Vector2.Distance(node.transform.position, a.transform.position)
-                    .CompareTo(Vector2.Distance(node.transform.position, b.transform.position));
-                });
+                    potentialConnections.Sort(delegate (Node a, Node b)
+                    {
+                        return Vector2.Distance(node.transform.position, a.transform.position)
+                        .CompareTo(Vector2.Distance(node.transform.position, b.transform.position));
+                    });
 
-                var bestConnections = potentialConnections.GetRange(0, Mathf.Min(numberOfConnections, potentialConnections.Count));
+                    //if (potentialConnections.Count < 1)
+                    //    Debug.Log("No potential connections from " + node.name);
 
-                foreach (var newConnection in bestConnections)
-                {
-                    CreateEdge(node, newConnection);
+                    var numberOfPaths = 1;
+
+                    if (Random.Range(0f, 1f) > 75)
+                        numberOfPaths = 2;
+
+                    var bestConnections = potentialConnections.GetRange(0, numberOfPaths);
+
+                    foreach (var newConnection in bestConnections)
+                    {
+                        CreateEdge(node, newConnection);
+                    }
                 }
 
+                // Hidden Edges
                 if (i > 0 && node.InEdges.Count < 1)
                 {
-                    var nodesFromLastRows = GetNodesFromAdjacentRows
+                    var nodesFromPrecedingRows = GetNodesFromAdjacentRows(i, -maxPathRange);
+                    var randomNode = nodesFromPrecedingRows.RandomElement();
+
+                    CreateEdge(randomNode, node, true);
                 }
             }
         }
@@ -104,9 +119,10 @@ public class Map : BaseBehaviour
         nodeRows[graphY].Add(node);
     }
 
-    private void CreateEdge(Node nodeA, Node nodeB)
+    private void CreateEdge(Node nodeA, Node nodeB, bool isHidden = false)
     {
         var newEdge = Instantiate(edgePrefab, transform);
+        newEdge.IsHidden = isHidden;
         newEdge.name = nodeA.name + " -> " + nodeB.name;
 
         newEdge.NodeA = nodeA;
@@ -141,27 +157,21 @@ public class Map : BaseBehaviour
 
         var startingIndex = currentIndex + indexIncrement;
         for (int i = startingIndex;
-            i != currentIndex + rowsToGet;
+            i != currentIndex + rowsToGet
+            && i <= nodeRows.Count - 1;
             i += indexIncrement)
         {
-            nodesFromAdjacentRows.AddRange(nodeRows[i]);
+            var nodesOfThatRow = nodeRows[i];
+            if (nodesOfThatRow.Count < 1)
+            {
+                Debug.Log("Row " + i + " was empty");
+            }
+            else
+            {
+                nodesFromAdjacentRows.AddRange(nodesOfThatRow);
+            }
         }
 
         return nodesFromAdjacentRows;
-    }
-
-    private List<Node> GetNodesFromNextRows(int currentRow)
-    {
-        var nodesOfNextRows = new List<Node>();
-
-        for (int i = 1; i <= maxRowsSkipped + 1; i++)
-        {
-            if (currentRow + i > nodeRows.Count - 1)
-                break;
-
-            nodesOfNextRows.AddRange(nodeRows[currentRow + i]);
-        }
-
-        return nodesOfNextRows;
     }
 }

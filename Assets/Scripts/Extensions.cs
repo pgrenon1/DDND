@@ -8,9 +8,15 @@ public static class Extensions
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
     }
 
-    public static T RandomElement<T>(this List<T> items)
+    public static T RandomElement<T>(this List<T> items, bool removeElement = false)
     {
-        return items[Random.Range(0, items.Count - 1)];
+        var randomIndex = Random.Range(0, items.Count - 1);
+        var value = items[randomIndex];
+
+        if (removeElement)
+            items.RemoveAt(randomIndex);
+
+        return value;
     }
 
     public static MenuOption ContainsKey(this List<KeyValuePair<MenuOption, SlotElement>> list, MenuOption menuOption)

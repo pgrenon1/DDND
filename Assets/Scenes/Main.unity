@@ -2395,8 +2395,10 @@ MonoBehaviour:
   edgePrefab: {fileID: 5465868043969600478, guid: 8339ea8421827194a8c60bb0cf490069,
     type: 3}
   maxConnections: 2
-  maxRowsSkipped: 1
-  noisePower: 35
+  maxRowsSkipped: 2
+  minNodesPerRow: 0
+  maxNodesPerRow: 2
+  noisePower: 0
 --- !u!222 &1413868090
 CanvasRenderer:
   m_ObjectHideFlags: 0
